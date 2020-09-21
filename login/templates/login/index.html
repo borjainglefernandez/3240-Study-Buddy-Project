@@ -1,17 +1,13 @@
+{% extends 'base.html' %}
 {% load socialaccount %}
-<html>
-  <head>
-    <title>Study Buddy Finder</title>
-  </head>
-  <body>
-  {% if user.is_authenticated %}
-  <p>You are logged in as {{ user.username }} </p>
-  <a href="{% provider_login_url 'google' %}">Sign into different account</a>
 
-  {% else %}
-  <h1>My Google Login Project</h1>
-  <a href="{% provider_login_url 'google' %}">Login with Google</a>
-  {% endif %}
+{% block content %}
+{% if user.is_authenticated %}
+<p>You are logged in as {{ user.username }} </p>
+<a href="{% provider_login_url 'google' %}">Sign into different account</a>
 
-  </body>
-</html>
+{% else %}
+<h1>My Google Login Project</h1>
+<a href="{% provider_login_url 'google' %}">Login with Google</a>
+{% endif %}
+{% endblock%}

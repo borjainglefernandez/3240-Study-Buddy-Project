@@ -1,12 +1,11 @@
 {% load socialaccount %}
 <html>
   <head>
-    <title>Google Registration</title>
+    <title>Study Buddy Finder</title>
   </head>
   <body>
-  <h1>My Google Login Project</h1>
   {% if user.is_authenticated %}
-  <p>You are logged in as {{ user.user }} </p>
+  <p>You are logged in as {{ user.username }} </p>
   <a href="{% provider_login_url 'google' %}">Sign into different account</a>
 
   {% else %}

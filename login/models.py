@@ -6,3 +6,8 @@ class Course(models.Model):
     mnemonic = models.CharField(max_length=4)
     number = models.PositiveSmallIntegerField()
     title = models.CharField(max_length=100)
+
+
+
+    def __str__(self):
+        return "(" + str(self.idNumber) + ") " + str(self.mnemonic) + " " + str(self.number) + ": " + str(self.title)

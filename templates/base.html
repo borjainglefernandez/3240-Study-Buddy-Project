@@ -9,7 +9,8 @@
 </head>
 <body>
 <div class="navbar bg-dark">
-    <a href="#">Home</a>
+    <a href="/">Home</a>
+    <a href="/profile">Profile Information</a>
     <a href="#">Log In</a>
 </div>
 <div class="container">
@@ -19,6 +20,9 @@
             <hr class="mt-0 mb-4">
             {% block content %}
             {% endblock %}
+            {% block studentprofile %}
+            {% endblock %}
+
         </div>
     </div>
 </div>

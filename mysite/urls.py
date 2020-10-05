@@ -16,12 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-
 from django.views.generic import TemplateView
+from django.contrib.auth.models import User
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name = "login/index.html")),
     path('accounts/', include('allauth.urls')),
     path('', include("studentprofile.urls")),
+    path('submit/', views.submit_profile, name='submit'),
+    path('profile/', views.ProfileView.as_view(), name = "student profile")
 ]

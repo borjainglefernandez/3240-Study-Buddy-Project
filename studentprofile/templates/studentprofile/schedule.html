@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4 py-2 grey align-center mx-auto">
+<p>It worked!</p>
+{#<form action="{% url 'studentprofile:generateSchedule' question.id %}" method="post">#}
+{##}
+{#{% csrf_token %}#}
+{##}
+{#    {% for iter in '12345'|make_list %}#}
+{#        <div class="row my-4 mx-2 px-2 py-2" style="background: lightgray">#}
+{##}
+{#            <label for="choice{{ forloop.counter }}">Class Name:</label>#}
+{#            <input type="text" name="class{{ forloop.counter }}" id="class{{ forloop.counter }}">#}
+{#            <br><br>#}
+{#            <br>#}
+{#            <label for="choice{{ forloop.counter }}">Strength (1-5)</label>#}
+{#            <input type="text" name="strength{{ forloop.counter }}" id="strength{{ forloop.counter }}">#}
+{##}
+{#        </div>#}
+{#    {% endfor %}#}
+{##}
+{#    <div class="row my-4 mx-2 px-2 py-2" style="background: lightgray">#}
+{#        <input type="submit" value="generateSchedule">#}
+{#    </div>#}
+{##}
+{#</form>#}
+</div>
+{% endblock%}

@@ -34,7 +34,7 @@ class Student(models.Model):
 
     major = models.CharField(max_length=100, default = "None") # Field for user's major
 
-    schedule = models.OneToOneField(Schedule, on_delete=models.DO_NOTHING, default=None)
+    schedule = models.OneToOneField(Schedule, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.user.username

@@ -5,7 +5,7 @@ from django.template import loader
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
-from .models import Schedule, Course, Class
+from .models import Schedule, Course, Class, Student
 
 # Create your views here.
 class NewScheduleView(generic.TemplateView):
@@ -67,6 +67,9 @@ def make(request):
             c = Class(course=courses[i], schedule=sched, strength=strengths[i])
             c.save()
         sched.save()
+        student = Student.objects.get(user=request.user)
+        student.schedule = sched
+        student.save()
 
     # question = get_object_or_404(Question, pk=question_id)
     # try:

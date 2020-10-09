@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block studentprofile %}
+    <p>Your name is {{ user.student.name }} </p>
+    <p>Your year is {{ user.student.year }} </p>
+    <p>Your major is {{ user.student.major }} </p>
+{% endblock%}

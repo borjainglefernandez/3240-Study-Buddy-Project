@@ -30,7 +30,7 @@ class Student(models.Model):
 
     name = models.CharField(max_length=100) # Field for user's name
 
-    year = models.IntegerField(default = 1) # Field for user's year
+    year = models.PositiveSmallIntegerField(default = 1) # Field for user's year
 
     major = models.CharField(max_length=100, default = "None") # Field for user's major
 

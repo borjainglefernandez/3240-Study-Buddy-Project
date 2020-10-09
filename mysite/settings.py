@@ -128,8 +128,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-import django_heroku
-django_heroku.settings(locals())
+import os
+if '/app' in os.environ['HOME']:
+    import django_heroku
+    django_heroku.settings(locals())
+
 
 # Needed for google authentication
 AUTHENTICATION_BACKENDS = (

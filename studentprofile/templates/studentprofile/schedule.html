@@ -2,7 +2,9 @@
 
 {% block content %}
 <div class="container my-4 py-2 grey align-center mx-auto">
-<p>It worked!</p>
+    <!-- Check first to see if there is an error message that needs to be displayed, and display it  -->
+<p>{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}</p>
+
 <form action="{% url 'studentprofile:generateSchedule' %}" method="post">
 
 {% csrf_token %}

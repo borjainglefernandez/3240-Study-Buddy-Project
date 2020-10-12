@@ -129,9 +129,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 import os
-if '/app' in os.environ['HOME']:
-    import django_heroku
-    django_heroku.settings(locals())
+if 'HOME' in os.environ:
+    if '/app' in os.environ['HOME']:
+        import django_heroku
+        django_heroku.settings(locals())
 
 
 # Needed for google authentication

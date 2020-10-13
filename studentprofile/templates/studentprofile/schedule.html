@@ -2,7 +2,8 @@
 
 {% block content %}
 <div class="container my-4 py-2 grey align-center mx-auto">
-<p>It worked!</p>
+<h4>Create you schedule below!</h4>
+<p>With format: Class Name [XXX 1234]; Strength (1-5) [3] </p>
 <form action="{% url 'studentprofile:generateSchedule' %}" method="post">
 
 {% csrf_token %}

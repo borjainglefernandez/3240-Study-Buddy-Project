@@ -8,7 +8,8 @@ from login.models import Course
 class Schedule(models.Model):
     # name = models.CharField(max_length=128)
     courses = models.ManyToManyField(Course, through='Class')
-
+    #num = models.PositiveSmallIntegerField()
+    
     def __str__(self):
         mylist = []
         for c in self.courses.all():

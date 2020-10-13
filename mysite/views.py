@@ -4,8 +4,6 @@ from studentprofile.models import Student, Schedule, Course, Class
 from django.contrib.auth.models import User
 from django.views import generic
 from django.urls import reverse
-from django.template import loader
-from django.shortcuts import render, get_object_or_404 
 
 
 def home(request):
@@ -18,11 +16,15 @@ def submit_profile(request):
     # Create a Student Object that connects to that user
     student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'], major = request.POST['Major'])
 
+    # Create a Schedule Object with the number entered by user
+    #schedule = Schedule(num=request.POST.get('NumClass'))
+
     # Save the Student Object we have just created
     student.save()
+    #schedule.save()
 
-    # Redirect to the student profile page
-    return HttpResponseRedirect(reverse('studentprofile:newSchedule'))
+    # Redirect to the schedule making page
+    return HttpResponseRedirect(reverse('studentprofile:newSchedule')) 
 
 class ProfileView(generic.TemplateView):
     model = Student

@@ -14,7 +14,7 @@ def submit_profile(request):
     user = User.objects.get(pk=request.user.id)
 
     # Create a Student Object that connects to that user
-    student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'], major = request.POST['Major'])
+    student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'], major = request.POST['Major'], num = request.POST['numClass'])
 
     # Create a Schedule Object with the number entered by user
     #schedule = Schedule(num=request.POST.get('NumClass'))

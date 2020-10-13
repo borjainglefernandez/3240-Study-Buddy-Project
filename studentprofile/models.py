@@ -8,8 +8,7 @@ from login.models import Course
 class Schedule(models.Model):
     # name = models.CharField(max_length=128)
     courses = models.ManyToManyField(Course, through='Class')
-    #num = models.PositiveSmallIntegerField()
-    
+
     def __str__(self):
         mylist = []
         for c in self.courses.all():
@@ -34,6 +33,8 @@ class Student(models.Model):
     year = models.PositiveSmallIntegerField(default = 1) # Field for user's year
 
     major = models.CharField(max_length=100, default = "None") # Field for user's major
+
+    num = models.PositiveSmallIntegerField(default = 1) # Field for user's number of classes
 
     schedule = models.OneToOneField(Schedule, on_delete=models.SET_NULL, null=True)
 

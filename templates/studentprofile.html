@@ -1,55 +1,116 @@
 {% extends 'base.html' %}
 
 {% block studentprofile %}
-    <h2 class="mb-3">Welcome {{user.student.name}}</h2>
-    <div class="mb-2">
-        <h4>Profile Details</h4>
-        <div class="row">
-            <div class="col-md-3 col-sm-12">
-                <strong>Name:</strong>
-            </div>
-            <div class="col-md-9">
-                {{ user.student.name }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 col-sm-12">
-                <strong>Year:</strong>
-            </div>
-            <div class="col-md-9 col-sm-12">
-                {{ user.student.year }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 col-sm-12">
-                <strong>Major:</strong>
-            </div>
-            <div class="col-md-9">
-                {{ user.student.major }}
-            </div>
-        </div>
-        </div>
 
-        <!-- Divider for Schedule-->
-        <div class="row">
-            <div class="col-md-3 col-sm-12">
-                <strong>Schedule:</strong>
-            </div>
+<!--
+If the user already has not stored their profile information display
+the necessary fields for them to do so
+-->
 
-            <!-- br starts a new line -->
-            <div class="col-md-3 col-sm-12">
-                <br>
-            </div>
+{% if not user.student.name %}
+<form action="{% url 'submit' %}" method="post">
+    {% csrf_token %}
+    <!--
+     Label for the student's name
+    -->
+    <div class="form-group w-100 p-3 off-white">
+        <label for="Name"> Name</label>
+        <input type="text" class="form-control" name="Name" placeholder="Enter your first name">
+    </div>
+    <!--
+     Label for the student's year
+    -->
+    <div class="form-group w-100 p-3 off-white">
+        <label for="Year">Year</label>
+        <select id="Year" name="Year">
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+        </select>
+    </div>
+    <!--
+   Label for the student's major
+  -->
+    <div class="form-group w-100 p-3 off-white">
+        <label for="Major">Major</label>
+        <select id="Major" name="Major">
+            <option value="Computer Science">Computer Science</option>
+            <option value="Systems Engineering">Systems Engineering</option>
+            <option value="Computer Engineering">Computer Engineering</option>
+        </select>
+    </div>
+    <!--
+   Label for the number of student's classes on schedule
+  -->
+    <div class="form-group w-100 p-3" style="background-color: #eee;">
+        <label for="NumClass">Number of classes you would like to add for your schedule </label>
+        <select id="NumClass" name="NumClass">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary mx-5">Now go generate your schedule!</button>
+</form>
 
-            <!-- For every class, display class and strength-->
-            {% for class in user.student.schedule.get_classes %}
-            <div class="col-md-9">
-                {{ class }}
-                <strong>Str: </strong> {{ class.strength }}
-            </div>
-            {% endfor %}
-
+<!--
+If the user already has already completed profile, display their profile
+-->
+{% else %}
+<h2 class="mb-3">Welcome {{user.student.name}}</h2>
+<div class="mb-2">
+    <h4>Profile Details</h4>
+    <div class="row">
+        <div class="col-md-3 col-sm-12">
+            <strong>Name:</strong>
+        </div>
+        <div class="col-md-9">
+            {{ user.student.name }}
         </div>
     </div>
-    <a href="#">Edit</a>
+    <div class="row">
+        <div class="col-md-3 col-sm-12">
+            <strong>Year:</strong>
+        </div>
+        <div class="col-md-9 col-sm-12">
+            {{ user.student.year }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-12">
+            <strong>Major:</strong>
+        </div>
+        <div class="col-md-9">
+            {{ user.student.major }}
+        </div>
+    </div>
+</div>
+
+<!-- Divider for Schedule-->
+<div class="row">
+    <div class="col-md-3 col-sm-12">
+        <strong>Schedule:</strong>
+    </div>
+
+    <!-- br starts a new line -->
+    <div class="col-md-3 col-sm-12">
+        <br>
+    </div>
+
+    <!-- For every class, display class and strength-->
+    {% for class in user.student.schedule.get_classes %}
+    <div class="col-md-9">
+        {{ class }}
+        <strong>Str: </strong> {{ class.strength }}
+    </div>
+    {% endfor %}
+
+</div>
+</div>
+<a href="#">Edit</a>
+{% endif %}
 {% endblock%}

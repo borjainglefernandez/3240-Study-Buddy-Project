@@ -47,7 +47,20 @@ the necessary fields for them to do so
           <option value="Computer Engineering">Computer Engineering</option>
         </select>
       </div>
-      <button type="submit" class="btn btn-primary mx-5">Submit</button>
+          <!--
+         Label for the number of student's classes on schedule
+        -->
+      <div class="form-group w-100 p-3" style="background-color: #eee;">
+        <label for="NumClass">Number of classes you would like to add for your schedule </label>
+        <select id="NumClass" name="Numclass">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary mx-5">Now go generate your schedule!</button>
     </form>
 {% endif %}
 

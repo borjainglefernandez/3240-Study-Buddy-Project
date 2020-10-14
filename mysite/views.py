@@ -1,6 +1,6 @@
 # Watkins, jmw4dx
 from django.http import HttpResponseRedirect, HttpResponse
-from studentprofile.models import Student
+from studentprofile.models import Student, Schedule, Course, Class
 from django.contrib.auth.models import User
 from django.views import generic
 from django.urls import reverse
@@ -14,13 +14,17 @@ def submit_profile(request):
     user = User.objects.get(pk=request.user.id)
 
     # Create a Student Object that connects to that user
-    student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'], major = request.POST['Major'])
+    student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'], major = request.POST['Major'], num = request.POST['numClass'])
+
+    # Create a Schedule Object with the number entered by user
+    #schedule = Schedule(num=request.POST.get('NumClass'))
 
     # Save the Student Object we have just created
     student.save()
+    #schedule.save()
 
-    # Redirect to the student profile page
-    return HttpResponseRedirect(reverse('student profile'))
+    # Redirect to the schedule making page
+    return HttpResponseRedirect(reverse('studentprofile:newSchedule')) 
 
 class ProfileView(generic.TemplateView):
     model = Student

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load socialaccount %}
 
+
 {% block content %}
 <!--
 If the user is authenticated then we do not have to log them in
@@ -19,14 +20,14 @@ the necessary fields for them to do so
         <!--
          Label for the student's name
         -->
-      <div class="form-group w-100 p-3" style="background-color: #eee;">
+      <div class="form-group w-100 p-3 off-white">
         <label for="Name"> Name</label>
         <input type="text" class="form-control" name="Name" placeholder="Enter your first name">
       </div>
         <!--
          Label for the student's year
         -->
-      <div class="form-group w-100 p-3" style="background-color: #eee;">
+      <div class="form-group w-100 p-3 off-white">
         <label for="Year">Year</label>
         <select id="Year" name="Year">
           <option value="2020">2020</option>
@@ -39,7 +40,7 @@ the necessary fields for them to do so
           <!--
          Label for the student's major
         -->
-       <div class="form-group w-100 p-3" style="background-color: #eee;">
+       <div class="form-group w-100 p-3 off-white">
         <label for="Major">Major</label>
         <select id="Major" name="Major">
           <option value="Computer Science">Computer Science</option>

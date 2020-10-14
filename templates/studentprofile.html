@@ -28,6 +28,28 @@
                 {{ user.student.major }}
             </div>
         </div>
+        </div>
+
+        <!-- Divider for Schedule-->
+        <div class="row">
+            <div class="col-md-3 col-sm-12">
+                <strong>Schedule:</strong>
+            </div>
+
+            <!-- br starts a new line -->
+            <div class="col-md-3 col-sm-12">
+                <br>
+            </div>
+
+            <!-- For every class, display class and strength-->
+            {% for class in user.student.schedule.get_classes %}
+            <div class="col-md-9">
+                {{ class }}
+                <strong>Str: </strong> {{ class.strength }}
+            </div>
+            {% endfor %}
+
+        </div>
     </div>
     <a href="#">Edit</a>
 {% endblock%}

@@ -10,6 +10,16 @@ class Schedule(models.Model):
     courses = models.ManyToManyField(Course, through='Class')
     #num = models.PositiveSmallIntegerField()
     
+
+    # Create a list of all classes in a schedule so that
+    # the template can run a for loop through
+    def get_classes(self):
+        classes = []
+        for c in self.courses.all():
+            myclass = Class.objects.get(schedule=self, course=c)
+            classes.append(myclass)
+        return classes
+
     def __str__(self):
         mylist = []
         for c in self.courses.all():
@@ -21,6 +31,9 @@ class Class(models.Model):
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     strength = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return str(self.course)
 
 class Student(models.Model):
 
@@ -35,7 +48,7 @@ class Student(models.Model):
 
     major = models.CharField(max_length=100, default = "None") # Field for user's major
 
-    schedule = models.OneToOneField(Schedule, on_delete=models.SET_NULL, null=True)
+    schedule = models.OneToOneField(Schedule, on_delete=models.SET_NULL, null=True) # Field for user's schedule
 
     def __str__(self):
         return self.user.username

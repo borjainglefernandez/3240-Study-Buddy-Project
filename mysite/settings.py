@@ -25,7 +25,7 @@ SECRET_KEY = '93zu$g#lr#n83oeay=x-c5@o-rln8(-8=u8uqsy0sm)tpz94c4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://asd-1-05-project.herokuapp.com/','127.0.0.1']
+ALLOWED_HOSTS = ['https://asd-1-05-project.herokuapp.com/', '127.0.0.1']
 
 
 # Application definition
@@ -129,9 +129,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 import os
-if '/app' in os.environ['HOME']:
-    import django_heroku
-    django_heroku.settings(locals())
+if 'HOME' in os.environ:
+    if '/app' in os.environ['HOME']:
+        import django_heroku
+        django_heroku.settings(locals())
 
 
 # Needed for google authentication

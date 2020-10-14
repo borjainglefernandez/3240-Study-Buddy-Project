@@ -8,4 +8,4 @@ class Course(models.Model):
     title = models.CharField(max_length=100)
 
     def __str__(self):
-        return "(" + str(self.idNumber) + ") " + str(self.mnemonic) + " " + str(self.number) + ": " + str(self.title)
+        return str(self.mnemonic) + " " + str(self.number) + " " + str(self.title)

@@ -10,15 +10,19 @@ If the user is authenticated then we do not have to log them in
 <p>You are logged in as {{ user.username }} </p>
 <a href="{% provider_login_url 'google' %}">Sign into different account</a>
 
-  <!-- Check first to see if there is an error message that needs to be displayed, and display it  -->
-  <p>{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}</p>
 <!--
 If the user already has not stored their profile information display
 the necessary fields for them to do so
 -->
 {% if not user.student.name %}
+
+  <!-- Check first to see if there is an error message that needs to be displayed, and display it  -->
+  <p>{% if error_message %}
+  <p><strong>{{ error_message }}</strong></p>{% endif %}</p>
+
     <form action="{% url 'submit' %}" method="post" >
             {% csrf_token %}
+            
         <!--
          Label for the student's name
         -->

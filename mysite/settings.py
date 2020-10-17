@@ -143,8 +143,8 @@ AUTHENTICATION_BACKENDS = (
 
 SITE_ID = 1
 
-# After logging in you are redirected to the home page
-LOGIN_REDIRECT_URL = '/'
+# After logging in you are redirected to the profile page
+LOGIN_REDIRECT_URL = '/profile'
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

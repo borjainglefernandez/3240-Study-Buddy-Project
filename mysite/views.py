@@ -16,12 +16,16 @@ def submit_profile(request):
     # Create a Student Object that connects to that user
     student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'], major = request.POST['Major'], num = request.POST['numClass'])
 
-    # Create a Schedule Object with the number entered by user
-    #schedule = Schedule(num=request.POST.get('NumClass'))
+    # Error for if user name is null
+    null_name_error = render(request, 'login/index.html', { # Redirects the user to the profile page again
+        'error_message': "Username cannot be blank.", # Description for the error message displayed
+    })
 
-    # Save the Student Object we have just created
-    student.save()
-    #schedule.save()
+    if (student.name != None or student.name != " "):
+        # Save the Student Object we have just created
+        student.save()
+    else: 
+        return null_name_error
 
     # Redirect to the schedule making page
     return HttpResponseRedirect(reverse('studentprofile:newSchedule')) 

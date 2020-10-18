@@ -18,6 +18,7 @@ def submit_profile(request):
         'error_message': "Username cannot be blank.", # Description for the error message displayed
     })
 
+
     if (request.POST['Name'] != " " and request.POST['Name'] !=""):
         # Create a Student Object that connects to that user
         student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'],

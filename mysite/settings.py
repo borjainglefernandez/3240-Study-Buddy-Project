@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'login',
     'studentprofile',
+    'studygroups',
 
     # Needed for google authentification
     'allauth',

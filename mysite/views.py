@@ -19,26 +19,42 @@ def submit_profile(request):
     })
 
 
-    if (request.POST['Name'] != " " and request.POST['Name'] !=""):
-        # Create a Student Object that connects to that user
-        student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'],
-                      major = request.POST['Major'], num = request.POST['NumClass'])
-    
-        # Save the Student Object we have just created
-        student.save()
+    if (request.POST['Name'] != "" and request.POST['Name'] != " "):
+        # Tests if an object of Student model exists
+        try:
+            foo = Student.objects.get(user=request.user)
+        except model.DoesNotExist:
+            foo = None
 
-    else: 
-        return null_name_error
+        if foo == None:
+            # If the user doesn't exist, create a Student Object that connects to that user
+            student = Student(user = request.user, name = request.POST['Name'], year = request.POST['Year'],
+                    major = request.POST['Major'], num = request.POST["Numclass"])
 
-    # Create an array equivalent to the size of the number of classes a user wants to input
-    num_of_classes = request.POST['NumClass']
-    num = []
-    for i in range(0,int(num_of_classes)):
-        num.append(1) # Note that it does not matter what is in the array
+            # Save the Student Object we have just created
+            student.save()
+
+        else:
+            # If the user exists, update the profile
+            foo.name = request.POST["Name"]
+            foo.year = request.POST["Year"]
+            foo.major = request.POST['Major']
+            foo.num = request.POST["Numclass"]
+            foo.save()
+
+        # Create an array equivalent to the size of the number of classes a user wants to input
+        num_of_classes = numVar
+        numC = []
+        for i in range(0,int(num_of_classes)):
+            numC.append(1) # Note that it does not matter what is in the array
                       # it just simply needs to be the size of the number of classes
 
-    # This creates a dict for the template to be able to access num
-    context = {'num': num}
+        # This creates a dict for the template to be able to access num
+        context = {'numC': numC}
+
+    else: 
+        # 
+        return null_name_error
 
     # Redirect to the schedule making page
     return render(request, 'studentprofile/schedule.html', context)

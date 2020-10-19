@@ -43,7 +43,7 @@ def submit_profile(request):
             foo.save()
 
         # Create an array equivalent to the size of the number of classes a user wants to input
-        num_of_classes = numVar
+        num_of_classes = request.POST['Numclass']
         numC = []
         for i in range(0,int(num_of_classes)):
             numC.append(1) # Note that it does not matter what is in the array

@@ -18,18 +18,18 @@ def submit_profile(request):
         'error_message': "Username cannot be blank.", # Description for the error message displayed
     })
 
-
+    print(request.POST)
     if (request.POST['Name'] != "" and request.POST['Name'] != " "):
         # Tests if an object of Student model exists
         try:
             foo = Student.objects.get(user=request.user)
-        except model.DoesNotExist:
+        except Student.DoesNotExist:
             foo = None
 
         if foo == None:
             # If the user doesn't exist, create a Student Object that connects to that user
             student = Student(user = request.user, name = request.POST['Name'], year = request.POST['Year'],
-                    major = request.POST['Major'], num = request.POST["Numclass"])
+                    major = request.POST['Major'], num = request.POST["NumClass"])
 
             # Save the Student Object we have just created
             student.save()
@@ -39,11 +39,11 @@ def submit_profile(request):
             foo.name = request.POST["Name"]
             foo.year = request.POST["Year"]
             foo.major = request.POST['Major']
-            foo.num = request.POST["Numclass"]
+            foo.num = request.POST["NumClass"]
             foo.save()
 
         # Create an array equivalent to the size of the number of classes a user wants to input
-        num_of_classes = request.POST['Numclass']
+        num_of_classes = request.POST['NumClass']
         numC = []
         for i in range(0,int(num_of_classes)):
             numC.append(1) # Note that it does not matter what is in the array

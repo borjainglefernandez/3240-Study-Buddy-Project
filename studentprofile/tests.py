@@ -32,6 +32,6 @@ class StudentModelCreationTests(TestCase):
         self.assertEqual(s6.name,"s2Name")
 
     # Exception 
-    def test_profile_saved_with_name(self):
-        s6 = Student(name="",year=3,major ="Chemistry")
-        self.assertRaises(expected_exception)
+    # def test_profile_saved_with_name(self):
+    #   s6 = Student(name="",year=3,major ="Chemistry")
+    #   self.assertRaises(expected_exception)

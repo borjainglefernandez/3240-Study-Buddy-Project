@@ -24,62 +24,62 @@ def make(request):
     # This is the same thing we had to do in mysite/views.py for
     # the initial profile creation
     user = User.objects.get(pk=request.user.id)
-    num = [] # We have to reinput num for each error message that may show up
+    numC = [] # We have to reinput num for each error message that may show up
     for i in range(0, user.student.num):
-        num.append(1)
+        numC.append(1)
 
     # General Error for invalid input
     general_error = render(request, 'studentprofile/schedule.html', { # Redirects the user to the schedule page again
         'error_message': "General Error", # Description for the error message displayed
-        'num': num
+        'numC': numC
     })
 
     # Error for if class number is not a digit
     class_number_digit_error = render(request, 'studentprofile/schedule.html', {
         'error_message': "Class number must be a digit.",
-        'num': num
+        'numC': numC
     })
 
     # Error for if class number is not 4 digits
     class_number_length_error = render(request, 'studentprofile/schedule.html', {
         'error_message': "Class number must be 4 digits.",
-        'num': num
+        'numC': numC
     })
 
     # Error for if class is not formatted correctly
     class_input_error = render(request, 'studentprofile/schedule.html', {
         'error_message': "Class must be a course mnemonic (i.e. CS) followed by a space followed by a 4 digit number (i.e. 3240).",
-        'num': num
+        'numC': numC
     })
 
     # Error for if strength is not a digit
     strength_digit_error = render(request, 'studentprofile/schedule.html', {
         'error_message': "Strength must be a digit.",
-        'num': num
+        'numC': numC
     })
 
     # Error for if strength is not a digit between 1 and 5
     strenth_range_error = render(request, 'studentprofile/schedule.html', {
         'error_message': "Strength must be a digit between 1 and 5.",
-        'num': num
+        'numC': numC
     })
 
     # Error for if a course inputted does not exist
     course_does_not_exist_error = render(request, 'studentprofile/schedule.html', {
         'error_message': "One or more courses inputted does not exist.",
-        'num': num
+        'numC': numC
     })
 
     # Error for if there are not enough classes inputted
     not_enough_classes_error = render(request, 'studentprofile/schedule.html', {
         'error_message': "You are missing some required course fields.",
-        'num': num
+        'numC': numC
     })
 
     # Error for if there are not enough strengths inputted
     not_enough_strengths_error = render(request, 'studentprofile/schedule.html', {
         'error_message': "You are missing some required strength fields.",
-        'num': num
+        'numC': numC
     })
 
     classKeys = sorted([key for key in request.POST.keys() if ("class" in key)])

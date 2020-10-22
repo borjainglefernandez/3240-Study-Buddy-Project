@@ -3,8 +3,9 @@ from django.contrib.auth.models import User
 
 from .models import Student
 
-# Create your tests here.
+# Create your tests here. 
 class StudentModelCreationTests(TestCase):
+    # Boundary case
     def test_profile_is_created_with_default_year(self):
         s1 = Student(name="s1")
         self.assertEqual(s1.year,1)
@@ -17,6 +18,7 @@ class StudentModelCreationTests(TestCase):
         s3 = Student(name="s1")
         self.assertEqual(s3.name,"s1")
 
+    #Equivalence test
     def test_profile_saved_with_year(self):
         s4 = Student(name="s2Name",year=2,major="Math")
         self.assertEqual(s4.year,2)
@@ -28,3 +30,8 @@ class StudentModelCreationTests(TestCase):
     def test_profile_saved_with_name(self):
         s6 = Student(name="s2Name",year=2,major ="Math")
         self.assertEqual(s6.name,"s2Name")
+
+    # Exception 
+    # def test_profile_saved_with_name(self):
+    #   s6 = Student(name="",year=3,major ="Chemistry")
+    #   self.assertRaises(expected_exception)

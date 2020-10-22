@@ -13,9 +13,20 @@ def submit_profile(request):
     # Fetch the current user
     user = User.objects.get(pk=request.user.id)
 
+
+    # Error for if user name is null
+    null_name_error = render(request, 'login/index.html', { # Redirects the user to the profile page again
+        'error_message': "Username cannot be blank.", # Description for the error message displayed
+    })
+
     if request.method=='POST':
         first_time = False
         print(request.POST)
+
+        
+        if request.POST["Name"].strip() == "":
+            return null_name_error
+
         try:
             student = Student.objects.get(user=request.user)
         except:

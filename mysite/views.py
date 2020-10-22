@@ -14,15 +14,15 @@ def submit_profile(request):
     user = User.objects.get(pk=request.user.id)
 
     if request.method=='POST':
-        if not Student.objects.get(user=request.user):
+        try:
+            student = Student.objects.get(user=request.user)
+        except:
             # Create a Student Object that connects to that user
             student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'],
                         major = request.POST['Major'], num = request.POST['NumClass'])
 
             # Save the Student Object we have just created
             student.save()
-
-        student = Student.objects.get(user=request.user)
 
         if 'generate-schedule' in request.POST:
             # Create an array equivalent to the size of the number of classes a user wants to input
@@ -37,8 +37,34 @@ def submit_profile(request):
 
             # Redirect to the schedule making page
             return render(request, 'studentprofile/schedule.html', context)
+        
         else:
-            
+            student.name = request.POST['Name']
+            student.year = request.POST['Year']
+            student.major = request.POST['Major']
+            student.num = request.POST['NumClass']
+            student.save()
+            if 'save-profile' in request.POST:
+                return render(request, 'studentprofile/schedule.html', context)
+            else:
+                num_of_classes = student.num
+                num = []
+                for i in range(0,int(num_of_classes)):
+                    num.append(1) # Note that it does not matter what is in the array
+                                # it just simply needs to be the size of the number of classes
+
+                # This creates a dict for the template to be able to access num
+                context = {'num': num}
+
+                # Redirect to the schedule making page
+                return render(request, 'studentprofile/schedule.html', context)
+    else:
+        print("no :( -----------------------------")
+
+def edit_profile(request):
+    student = Student.objects.get(user=request.user)
+    student.edit = True
+    return render(request, 'studentprofile')
 
 class ProfileView(generic.TemplateView):
     model = Student

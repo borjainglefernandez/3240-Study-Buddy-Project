@@ -7,7 +7,7 @@ If the user already has not stored their profile information display
 the necessary fields for them to do so
 -->
 
-{% if not user.student.name %}
+{% if not user.student.name or user.student.edit%}
 <form action="{% url 'submit' %}" method="post">
     {% csrf_token %}
     <!--
@@ -57,6 +57,8 @@ the necessary fields for them to do so
     {% if not user.student.name %}
     <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Now go generate your schedule!</button>
     {% else %}
+    <button type="submit" class="btn btn-primary mx-5" name="save-profile">Save</button>
+    <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Edit schedule</button>
     {% endif %}
 </form>
 
@@ -114,6 +116,9 @@ If the user already has already completed profile, display their profile
 
 </div>
 </div>
-<a href="#">Edit</a>
+<form action="{% url 'edit' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary mx-5" name="edit">Edit</button>
+</form>
 {% endif %}
 {% endblock%}

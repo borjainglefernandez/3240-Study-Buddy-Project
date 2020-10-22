@@ -1,8 +1,8 @@
 :root {
-    --primary: red;
-    --secondary: blue;
-    --tertiary: green;
-    --text: pink;
+    --primary: #3b55ce;
+    --secondary: #fe53bb;
+    --tertiary: #ffd700;
+    --text: #037a90;
 }
 
 .off-white {

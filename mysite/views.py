@@ -14,17 +14,21 @@ def submit_profile(request):
     user = User.objects.get(pk=request.user.id)
 
     if request.method=='POST':
+        first_time = False
+
         try:
             student = Student.objects.get(user=request.user)
         except:
             # Create a Student Object that connects to that user
             student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'],
                         major = request.POST['Major'], num = request.POST['NumClass'])
-
+            first_time = True
             # Save the Student Object we have just created
             student.save()
 
-        if 'generate-schedule' in request.POST:
+        # If this is the first time the user is generating the schedule
+        if 'generate-schedule' in request.POST and first_time:
+
             # Create an array equivalent to the size of the number of classes a user wants to input
             num_of_classes = request.POST['NumClass']
             num = []
@@ -34,14 +38,10 @@ def submit_profile(request):
 
             # This creates a dict for the template to be able to access num
             context = {'num': num}
-            print(student.edit, "sched")
-            print(student.name, "name1") # there is no name??
-            print(not user.student.name, "name") # this check is failing
-            print(user.student.edit, "edit")
-
             # Redirect to the schedule making page
             return render(request, 'studentprofile/schedule.html', context)
         
+        # Otherwise 
         else:
             student.name = request.POST['Name']
             student.year = request.POST['Year']
@@ -49,7 +49,12 @@ def submit_profile(request):
             student.num = request.POST['NumClass']
             student.edit = False
             student.save()
-            print(student, "test")
+            
+            print(student.edit, "sched")
+            print(student.name, "name1") # there is no name??
+            print(not user.student.name, "name") # this check is failing
+            print(user.student.edit, "edit")
+
             if 'save-profile' in request.POST:
                 return HttpResponseRedirect(reverse('student profile'))
             else:

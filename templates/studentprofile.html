@@ -55,10 +55,10 @@ the necessary fields for them to do so
         </select>
     </div>
     {% if not user.student.name %}
-    <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Now go generate your schedule!</button>
+        <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Now go generate your schedule!</button>
     {% else %}
-    <button type="submit" class="btn btn-primary mx-5" name="save-profile">Save</button>
-    <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Edit schedule</button>
+        <button type="submit" class="btn btn-primary mx-5" name="save-profile">Save</button>
+        <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Edit schedule</button>
     {% endif %}
 </form>
 

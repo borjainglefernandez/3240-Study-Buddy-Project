@@ -26,5 +26,6 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', include("studentprofile.urls")),
     path('submit/', views.submit_profile, name='submit'),
+    path('edit/', views.edit_profile, name='edit'),
     path('profile/', views.ProfileView.as_view(), name = "student profile")
 ]

@@ -53,11 +53,23 @@ def submit_profile(request):
         context = {'numC': numC}
 
     else: 
-        # 
+        # Prints the error message
         return null_name_error
 
-    # Redirect to the schedule making page
-    return render(request, 'studentprofile/schedule.html', context)
+                # This creates a dict for the template to be able to access num
+                context = {'num': num}
+
+                # Redirect to the schedule making page
+                return render(request, 'studentprofile/schedule.html', context)
+    else:
+        print("no :( -----------------------------")
+
+def edit_profile(request):
+    student = Student.objects.get(user=request.user)
+    student.edit = True
+    print(student)
+    student.save()
+    return HttpResponseRedirect(reverse('student profile'))
 
 class ProfileView(generic.TemplateView):
     model = Student

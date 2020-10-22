@@ -7,7 +7,7 @@ If the user already has not stored their profile information display
 the necessary fields for them to do so
 -->
 
-{% if not user.student.name %}
+{% if not user.student.name or user.student.edit%}
 <form action="{% url 'submit' %}" method="post">
     {% csrf_token %}
     <!--
@@ -15,7 +15,7 @@ the necessary fields for them to do so
     -->
     <div class="form-group w-100 p-3 off-white">
         <label for="Name"> Name</label>
-        <input type="text" class="form-control" name="Name" placeholder="Enter your first name">
+        <input type="text" class="form-control" name="Name" id="Name" placeholder="Enter your first name" value={{user.student.name}}>
     </div>
     <!--
      Label for the student's year
@@ -23,11 +23,15 @@ the necessary fields for them to do so
     <div class="form-group w-100 p-3 off-white">
         <label for="Year">Year</label>
         <select id="Year" name="Year">
-            <option value="2020">2020</option>
-            <option value="2021">2021</option>
-            <option value="2022">2022</option>
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
+            {% with '2020 2021 2022 2023 2024' as years%}
+                {% for year in years.split %}
+                    {% if user.student.year|slugify == year %}
+                        <option value={{year}} selected>{{year}}</option>
+                    {% else %}
+                        <option value={{year}}>{{year}}</option>
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
         </select>
     </div>
     <!--
@@ -36,9 +40,24 @@ the necessary fields for them to do so
     <div class="form-group w-100 p-3 off-white">
         <label for="Major">Major</label>
         <select id="Major" name="Major">
-            <option value="Computer Science">Computer Science</option>
-            <option value="Systems Engineering">Systems Engineering</option>
-            <option value="Computer Engineering">Computer Engineering</option>
+            {% if user.student.major == 'Computer Science' %}
+                <option value="Computer Science" selected>Computer Science</option>
+            {% else %}
+                <option value="Computer Science">Computer Science</option>
+            {% endif %}
+
+            {% if user.student.major == 'Systems Engineering' %}
+                <option value="Systems Engineering" selected>Systems Engineering</option>
+            {% else %}
+                <option value="Systems Engineering">Systems Engineering</option>
+            {% endif %}
+
+            {% if user.student.major == 'Computer Engineering' %}
+                <option value="Computer Engineering" selected>Computer Engineering</option>
+            {% else %}
+                <option value="Computer Engineering">Computer Engineering</option>
+            {% endif %}
+
         </select>
     </div>
     <!--
@@ -47,14 +66,23 @@ the necessary fields for them to do so
     <div class="form-group w-100 p-3" style="background-color: #eee;">
         <label for="NumClass">Number of classes you would like to add for your schedule </label>
         <select id="NumClass" name="NumClass">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
+            {% with '1 2 3 4 5' as numClasses%}
+                {% for number in numClasses.split %}
+                    {% if user.student.num|slugify == number %}
+                        <option value={{number}} selected>{{number}}</option>
+                    {% else %}
+                        <option value={{number}}>{{number}}</option>
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
         </select>
     </div>
-    <button type="submit" class="btn btn-primary mx-5">Now go generate your schedule!</button>
+    {% if not user.student.name %}
+        <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Now go generate your schedule!</button>
+    {% else %}
+        <button type="submit" class="btn btn-primary mx-5" name="save-profile">Save</button>
+        <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Edit schedule</button>
+    {% endif %}
 </form>
 
 <!--
@@ -111,6 +139,9 @@ If the user already has already completed profile, display their profile
 
 </div>
 </div>
-<a href="#">Edit</a>
+<form action="{% url 'edit' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary mx-5" name="edit">Edit</button>
+</form>
 {% endif %}
 {% endblock%}

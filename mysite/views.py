@@ -34,6 +34,10 @@ def submit_profile(request):
 
             # This creates a dict for the template to be able to access num
             context = {'num': num}
+            print(student.edit, "sched")
+            print(student.name, "name1") # there is no name??
+            print(not user.student.name, "name") # this check is failing
+            print(user.student.edit, "edit")
 
             # Redirect to the schedule making page
             return render(request, 'studentprofile/schedule.html', context)
@@ -43,9 +47,11 @@ def submit_profile(request):
             student.year = request.POST['Year']
             student.major = request.POST['Major']
             student.num = request.POST['NumClass']
+            student.edit = False
             student.save()
+            print(student, "test")
             if 'save-profile' in request.POST:
-                return render(request, 'studentprofile/schedule.html', context)
+                return HttpResponseRedirect(reverse('student profile'))
             else:
                 num_of_classes = student.num
                 num = []
@@ -64,7 +70,8 @@ def submit_profile(request):
 def edit_profile(request):
     student = Student.objects.get(user=request.user)
     student.edit = True
-    return render(request, 'studentprofile')
+    student.save()
+    return HttpResponseRedirect(reverse('student profile'))
 
 class ProfileView(generic.TemplateView):
     model = Student

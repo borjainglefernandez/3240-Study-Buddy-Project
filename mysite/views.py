@@ -49,11 +49,6 @@ def submit_profile(request):
             student.num = request.POST['NumClass']
             student.edit = False
             student.save()
-            
-            print(student.edit, "sched")
-            print(student.name, "name1") # there is no name??
-            print(not user.student.name, "name") # this check is failing
-            print(user.student.edit, "edit")
 
             if 'save-profile' in request.POST:
                 return HttpResponseRedirect(reverse('student profile'))

@@ -15,7 +15,7 @@ def submit_profile(request):
 
     if request.method=='POST':
         first_time = False
-
+        print(request.POST)
         try:
             student = Student.objects.get(user=request.user)
         except:
@@ -75,6 +75,7 @@ def submit_profile(request):
 def edit_profile(request):
     student = Student.objects.get(user=request.user)
     student.edit = True
+    print(student)
     student.save()
     return HttpResponseRedirect(reverse('student profile'))
 

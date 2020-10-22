@@ -25,7 +25,7 @@ the necessary fields for them to do so
         <select id="Year" name="Year">
             {% with '2020 2021 2022 2023 2024' as years%}
                 {% for year in years.split %}
-                    {% if year == user.student.year %}
+                    {% if user.student.year|slugify == year %}
                         <option value={{year}} selected>{{year}}</option>
                     {% else %}
                         <option value={{year}}>{{year}}</option>
@@ -40,9 +40,24 @@ the necessary fields for them to do so
     <div class="form-group w-100 p-3 off-white">
         <label for="Major">Major</label>
         <select id="Major" name="Major">
-            <option value="Computer Science">Computer Science</option>
-            <option value="Systems Engineering">Systems Engineering</option>
-            <option value="Computer Engineering">Computer Engineering</option>
+            {% if user.student.major == 'Computer Science' %}
+                <option value="Computer Science" selected>Computer Science</option>
+            {% else %}
+                <option value="Computer Science">Computer Science</option>
+            {% endif %}
+
+            {% if user.student.major == 'Systems Engineering' %}
+                <option value="Systems Engineering" selected>Systems Engineering</option>
+            {% else %}
+                <option value="Systems Engineering">Systems Engineering</option>
+            {% endif %}
+
+            {% if user.student.major == 'Computer Engineering' %}
+                <option value="Computer Engineering" selected>Computer Engineering</option>
+            {% else %}
+                <option value="Computer Engineering">Computer Engineering</option>
+            {% endif %}
+
         </select>
     </div>
     <!--
@@ -51,11 +66,15 @@ the necessary fields for them to do so
     <div class="form-group w-100 p-3" style="background-color: #eee;">
         <label for="NumClass">Number of classes you would like to add for your schedule </label>
         <select id="NumClass" name="NumClass">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
+            {% with '1 2 3 4 5' as numClasses%}
+                {% for number in numClasses.split %}
+                    {% if user.student.num|slugify == number %}
+                        <option value={{number}} selected>{{number}}</option>
+                    {% else %}
+                        <option value={{number}}>{{number}}</option>
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
         </select>
     </div>
     {% if not user.student.name %}

@@ -23,11 +23,15 @@ the necessary fields for them to do so
     <div class="form-group w-100 p-3 off-white">
         <label for="Year">Year</label>
         <select id="Year" name="Year">
-            <option value="2020">2020</option>
-            <option value="2021">2021</option>
-            <option value="2022">2022</option>
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
+            {% with '2020 2021 2022 2023 2024' as years%}
+                {% for year in years.split %}
+                    {% if year == user.student.year %}
+                        <option value={{year}} selected>{{year}}</option>
+                    {% else %}
+                        <option value={{year}}>{{year}}</option>
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
         </select>
     </div>
     <!--

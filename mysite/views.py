@@ -50,6 +50,8 @@ def submit_profile(request):
             student.edit = False
             student.save()
 
+            print(student.year, "year")
+
             if 'save-profile' in request.POST:
                 return HttpResponseRedirect(reverse('student profile'))
             else:

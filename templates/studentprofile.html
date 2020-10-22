@@ -54,7 +54,10 @@ the necessary fields for them to do so
             <option value="5">5</option>
         </select>
     </div>
-    <button type="submit" class="btn btn-primary mx-5">Now go generate your schedule!</button>
+    {% if not user.student.name %}
+    <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Now go generate your schedule!</button>
+    {% else %}
+    {% endif %}
 </form>
 
 <!--

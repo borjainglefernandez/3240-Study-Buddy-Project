@@ -8,6 +8,9 @@ the necessary fields for them to do so
 -->
 
 {% if not user.student.name or user.student.edit%}
+    {% if error_message %}
+         <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
 <form action="{% url 'submit' %}" method="post">
     {% csrf_token %}
     <!--

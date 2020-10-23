@@ -13,29 +13,42 @@ def submit_profile(request):
     # Fetch the current user
     user = User.objects.get(pk=request.user.id)
 
+    print(request.POST)
 
-    # Error for if user name is null
-    null_name_error = render(request, 'login/index.html', { # Redirects the user to the profile page again
+
+    # Error for if user name is null and its the first time the user is logging in
+    null_name_error_create = render(request, 'login/index.html', { # Redirects the user to the login page again
         'error_message': "Username cannot be blank.", # Description for the error message displayed
+    })
+
+    # Error for if user name is null and the user is editing their profile
+    null_name_error_edit = render(request, 'studentprofile.html', {  # Redirects the user to the profile page again
+        'error_message': "Username cannot be blank.",  # Description for the error message displayed
     })
 
     if request.method=='POST':
         first_time = False
         print(request.POST)
 
-        
-        if request.POST["Name"].strip() == "":
-            return null_name_error
-
         try:
             student = Student.objects.get(user=request.user)
+
+            if request.POST["Name"].strip() == "":
+                return null_name_error_edit # if user is editing their profile and there is no name
+                                            # raise the error
+
         except:
+            if request.POST["Name"].strip() == "":
+                return null_name_error_create # if user is editing their profile and there is no name
+                                              # raise the error
+
             # Create a Student Object that connects to that user
             student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'],
                         major = request.POST['Major'], num = request.POST['NumClass'])
             first_time = True
             # Save the Student Object we have just created
             student.save()
+
 
         # If this is the first time the user is generating the schedule
         if 'generate-schedule' in request.POST and first_time:
@@ -48,7 +61,7 @@ def submit_profile(request):
                             # it just simply needs to be the size of the number of classes
 
             # This creates a dict for the template to be able to access num
-            context = {'num': num}
+            context = {'numC': num}
             # Redirect to the schedule making page
             return render(request, 'studentprofile/schedule.html', context)
         
@@ -73,7 +86,7 @@ def submit_profile(request):
                                 # it just simply needs to be the size of the number of classes
 
                 # This creates a dict for the template to be able to access num
-                context = {'num': num}
+                context = {'numC': num}
 
                 # Redirect to the schedule making page
                 return render(request, 'studentprofile/schedule.html', context)

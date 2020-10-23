@@ -90,7 +90,7 @@ class ScheduleModelCreationTests(TestCase):
         self.assertListEqual(expected, actual)
 
 class SubmitProfileTest(TestCase):
-
+    # This sets up all our tests so that they can access these fields directly
     def setUp(self):
         self.request_factory = RequestFactory() # This creates a request factor object which is needed when
                                                 # simulating requests
@@ -98,13 +98,47 @@ class SubmitProfileTest(TestCase):
         self.user = User.objects.create_user(
         username='bni3y', email='bni3y@virginia.edu', password='3050G@laxy1') # Create a simulated user
 
-        # Create a Student Object that connects to that user
-        #student = Student(user = self.user, name = "Borja", year = 1, major = "Computer Science", num = 5)
+    # Test that when user presses the generate schedule button when first creating profile that it redirects
+    # to correct page
+    #
+    # Note that there is not student object associated with the user
+    def test_submit_profile_first_time_valid(self):
+        request = self.request_factory.post(reverse('submit'),
+                                            {'Name': ['Jim'],
+                                             'Year': ['2021'],
+                                             'Major': ['Systems Engineering'],
+                                             'NumClass': ['2'],
+                                             'generate-schedule': ['']}) # Generate Schedule
+        request.user = self.user
+        actual = len(submit_profile(request).content)
 
-        # Save the Student Object we have just created
-        #student.save()
+        num = [1,1]
+        expected = len(render(request, 'studentprofile/schedule.html', {'numC': num}).content)
 
-    def test_submit_profile_valid(self):
+        self.assertEqual(actual, expected)
+
+    # Test error message when name field is blank when creating profile for first time
+    #
+    # Note that there is not student object associated with the user
+    def test_submit_profile_first_time_no_name(self):
+        request = self.request_factory.post(reverse('submit'),
+                                            {'Name': [''],
+                                             'Year': ['2021'],
+                                             'Major': ['Systems Engineering'],
+                                             'NumClass': ['2'],
+                                             'generate-schedule': ['']})
+        request.user = self.user
+        actual = len(submit_profile(request).content)
+
+        num = [1,1]
+        expected = len(render(request, 'login/index.html', {
+        'error_message': "Username cannot be blank.",
+        }).content)
+
+        self.assertEqual(actual, expected)
+
+    # Test that when user presses the save button after editing profile it redirects to correct page
+    def test_submit_profile_edit_save_valid(self):
         request = self.request_factory.post(reverse('submit'),
                                             {'Name': ['Jim'],
                                              'Year': ['2021'],
@@ -112,7 +146,61 @@ class SubmitProfileTest(TestCase):
                                              'NumClass': ['2'],
                                              'save-profile': ['']})
         request.user = self.user
-        submit_profile(request)
+        # Create a Student Object so that it is an existing user
+        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5)
+        student.save()
+
+        actual = len(submit_profile(request).content)
+        print(submit_profile(request))
+
+        num = [1,1]
+        expected = len(HttpResponseRedirect(reverse('student profile')).content)
+
+        self.assertEqual(actual, expected)
+
+    # Test that when user presses the edit schedule button after editing profile it redirects to correct page
+    def test_submit_profile_edit_schedule_valid(self):
+        request = self.request_factory.post(reverse('submit'),
+                                            {'Name': ['Jim'],
+                                             'Year': ['2021'],
+                                             'Major': ['Systems Engineering'],
+                                             'NumClass': ['2'],
+                                             'generate-schedule': ['']}) # Indicates edit schedule was pressed
+        request.user = self.user
+        # Create a Student Object so that it is an existing user
+        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5)
+        student.save()
+
+        actual = len(submit_profile(request).content)
+        print(submit_profile(request))
+
+        num = [1,1]
+        expected = len(render(request, 'studentprofile/schedule.html', {'numC': num}).content)
+
+        self.assertEqual(actual, expected)
+
+    # Test error message when name field is blank when editing existing student profile
+    def test_submit_profile_edit_no_name(self):
+        request = self.request_factory.post(reverse('submit'),
+                                            {'Name': [''], # No name field
+                                             'Year': ['2021'],
+                                             'Major': ['Systems Engineering'],
+                                             'NumClass': ['2'],
+                                             'generate-schedule': ['']})
+        request.user = self.user
+
+        # Create a Student Object so that it is an existing user
+        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5)
+        student.save()
+
+        actual = len(submit_profile(request).content)
+
+        expected = len(render(request, 'studentprofile.html', {
+        'error_message': "Username cannot be blank.",
+        }).content)
+
+        self.assertEqual(actual, expected)
+
 
 class MakeTest(TestCase):
     # This sets up all our tests so that they can access these fields directly

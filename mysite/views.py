@@ -13,9 +13,6 @@ def submit_profile(request):
     # Fetch the current user
     user = User.objects.get(pk=request.user.id)
 
-    print(request.POST)
-
-
     # Error for if user name is null and its the first time the user is logging in
     null_name_error_create = render(request, 'login/index.html', { # Redirects the user to the login page again
         'error_message': "Username cannot be blank.", # Description for the error message displayed
@@ -39,9 +36,8 @@ def submit_profile(request):
 
         except:
             if request.POST["Name"].strip() == "":
-                return null_name_error_create # if user is editing their profile and there is no name
+                return null_name_error_create # if user is creating their profile for first time and there is no name
                                               # raise the error
-
             # Create a Student Object that connects to that user
             student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'],
                         major = request.POST['Major'], num = request.POST['NumClass'])
@@ -62,9 +58,10 @@ def submit_profile(request):
 
             # This creates a dict for the template to be able to access num
             context = {'numC': num}
+
             # Redirect to the schedule making page
             return render(request, 'studentprofile/schedule.html', context)
-        
+
         # Otherwise 
         else:
             student.name = request.POST['Name']
@@ -77,6 +74,7 @@ def submit_profile(request):
             print(student.year, "year")
 
             if 'save-profile' in request.POST:
+                print("HERE")
                 return HttpResponseRedirect(reverse('student profile'))
             else:
                 num_of_classes = student.num

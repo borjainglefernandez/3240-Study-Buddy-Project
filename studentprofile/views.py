@@ -160,7 +160,9 @@ def make(request):
             c.save()
         sched.save()
         student = Student.objects.get(user=request.user)
+        print(student.name)
         student.schedule = sched
+        print(sched.get_classes())
         student.save()
 
     return HttpResponseRedirect(reverse('student profile'))

@@ -18,7 +18,7 @@ from django.urls import path, include
 from . import views
 from django.views.generic import TemplateView
 from django.contrib.auth.models import User
-
+app_name = "mysite"
 
 urlpatterns = [
     path('admin/', admin.site.urls),

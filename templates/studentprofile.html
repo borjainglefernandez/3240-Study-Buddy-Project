@@ -43,24 +43,13 @@ the necessary fields for them to do so
     <div class="form-group w-100 p-3 off-white">
         <label for="Major">Major</label>
         <select id="Major" name="Major">
-            {% if user.student.major == 'Computer Science' %}
-                <option value="Computer Science" selected>Computer Science</option>
-            {% else %}
-                <option value="Computer Science">Computer Science</option>
-            {% endif %}
-
-            {% if user.student.major == 'Systems Engineering' %}
-                <option value="Systems Engineering" selected>Systems Engineering</option>
-            {% else %}
-                <option value="Systems Engineering">Systems Engineering</option>
-            {% endif %}
-
-            {% if user.student.major == 'Computer Engineering' %}
-                <option value="Computer Engineering" selected>Computer Engineering</option>
-            {% else %}
-                <option value="Computer Engineering">Computer Engineering</option>
-            {% endif %}
-
+            {% for major in get_majors %}
+                    {% if user.student.major == major %}
+                        <option value="{{major}}" selected>{{major}}</option>
+                    {% else %}
+                        <option value="{{major}}">{{major}}</option>
+                    {% endif %}
+            {% endfor %}
         </select>
     </div>
     <!--

@@ -96,7 +96,7 @@ class SubmitProfileTest(TestCase):
                                                 # simulating requests
 
         self.user = User.objects.create_user(
-        username='bni3y', email='bni3y@virginia.edu', password='3050G@laxy1') # Create a simulated user
+        username='bni3y', email='bni3y@virginia.edu', password='jasdflkjsdfalk;f') # Create a simulated user
 
     # Test that when user presses the generate schedule button when first creating profile that it redirects
     # to correct page
@@ -211,7 +211,7 @@ class MakeTest(TestCase):
                                                 # simulating requests
 
         self.user = User.objects.create_user(
-        username='bni3y', email='bni3y@virginia.edu', password='3050G@laxy1') # Create a simulated user
+        username='bni3y', email='bni3y@virginia.edu', password='djflksdjldskfjlfdsk') # Create a simulated user
 
         # Create a Student Object that connects to that user
         student = Student(user = self.user, name = "Borja", year = 1, major = "Computer Science", num = 5)

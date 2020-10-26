@@ -98,7 +98,93 @@ def edit_profile(request):
     student.save()
     return HttpResponseRedirect(reverse('student profile'))
 
-class ProfileView(generic.TemplateView):
+class ProfileView(generic.ListView):
     model = Student
+    context_object_name = 'get_majors' # This is the name of the variable within the template
+                                       # that holds the list of majors
+
     template_name = 'studentprofile.html'
+
+    # This function takes the return data and puts it into the context_object_name to be used in the template
+    #
+    # This is a feature of the generic.ListView
+    def get_queryset(self):
+        return ["Undeclared",
+                "Aerospace Engineering",
+                "African American and African Studies",
+                "American Studies",
+                "Anthropology",
+                "Archaeology",
+                "Architectural History",
+                "Architecture",
+                "Astronomy",
+                "Bachelor of Interdisciplinary Studies",
+                "Bachelor of Professional Studies in Health Sciences Management",
+                "Biology",
+                "Biomedical Engineering",
+                "Chemical Engineering",
+                "Chemistry",
+                "Civil Engineering",
+                "Classics",
+                "Cognitive Science",
+                "Commerce",
+                "Comparative Literature",
+                "Computer Engineering",
+                "Computer Science (B.A.)",
+                "Computer Science (B.S.)",
+                "Dance",
+                "Drama",
+                "East Asian Languages, Literatures and Culture",
+                "Economics",
+                "Electrical Engineering",
+                "Engineering Science",
+                "English",
+                "Environmental Sciences",
+                "Environmental Thought and Practice",
+                "Five-Year Teacher Education Program",
+                "French",
+                "German",
+                "German Studies",
+                "Global Studies",
+                "Global Sustainability Minor",
+                "Historic Preservation Minor",
+                "History",
+                "History of Art",
+                "Human Biology",
+                "Interdisciplinary Major of Global Studies",
+                "Jewish Studies",
+                "Kinesiology(BSEd)",
+                "Latin American Studies",
+                "Linguistics",
+                "Materials Science and Engineering",
+                "Mathematics",
+                "Mechanical Engineering",
+                "Media Studies",
+                "Medieval Studies",
+                "Middle Eastern Language & Literature",
+                "Middle East Studies",
+                "Music",
+                "Neuroscience",
+                "Nursing",
+                "Philosophy",
+                "Physics",
+                "Political and Social Thought",
+                "Political Philosophy, Policy, and Law",
+                "Politics",
+                "Psychology",
+                "Religious Studies",
+                "Slavic Languages and Literatures",
+                "Sociology",
+                "South Asian Language & Literature",
+                "South Asian Studies",
+                "Spanish",
+                "Speech Communication Disorders",
+                "Statistics",
+                "Studio Art",
+                "Systems Engineering"
+                "Urban and Environmental Planning",
+                "Women, Gender & Sexuality",
+                "Youth & Social Innovation(BSEd)"
+                ]
+
 

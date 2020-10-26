@@ -11,72 +11,11 @@ If the user is authenticated then we do not have to log them in
 <a href="{% provider_login_url 'google' %}">Sign into different account</a>
 
 <!--
-If the user already has not stored their profile information display
-the necessary fields for them to do so
--->
-{% if not user.student.name %}
-
-  <!-- Check first to see if there is an error message that needs to be displayed, and display it  -->
-  <p>{% if error_message %}
-  <p><strong>{{ error_message }}</strong></p>{% endif %}</p>
-
-    <form action="{% url 'submit' %}" method="post" >
-            {% csrf_token %}
-            
-        <!--
-         Label for the student's name
-        -->
-      <div class="form-group w-100 p-3 off-white">
-        <label for="Name"> Name</label>
-        <input type="text" class="form-control" name="Name" placeholder="Enter your first name">
-      </div>
-        <!--
-         Label for the student's year
-        -->
-      <div class="form-group w-100 p-3 off-white">
-        <label for="Year">Year</label>
-        <select id="Year" name="Year">
-          <option value="2020">2020</option>
-          <option value="2021">2021</option>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-          <option value="2024">2024</option>
-        </select>
-      </div>
-          <!--
-         Label for the student's major
-        -->
-       <div class="form-group w-100 p-3 off-white">
-        <label for="Major">Major</label>
-        <select id="Major" name="Major">
-          <option value="Computer Science">Computer Science</option>
-          <option value="Systems Engineering">Systems Engineering</option>
-          <option value="Computer Engineering">Computer Engineering</option>
-        </select>
-      </div>
-          <!--
-         Label for the number of student's classes on schedule
-        -->
-      <div class="form-group w-100 p-3" style="background-color: #eee;">
-        <label for="NumClass">Number of classes you would like to add for your schedule </label>
-        <select id="NumClass" name="NumClass">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary mx-5">Now go generate your schedule!</button>
-    </form>
-{% endif %}
-
-<!--
 If the user is not authenticated then we have to log them in
 before we can store any of their information
 -->
 {% else %}
-    <h1>My Google Login Project</h1>
+    <h1>Login with Google to create an account!</h1>
     <a href="{% provider_login_url 'google' %}">Login with Google</a>
 {% endif %}
 {% endblock%}

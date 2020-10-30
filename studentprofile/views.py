@@ -82,6 +82,12 @@ def make(request):
         'numC': numC
     })
 
+    # Error for inputting a class multiple times
+    multiple_entries_error = render(request, 'studentprofile/schedule.html', {
+        'error_message': "One or more classes entered multiple times. Each course field should be unique.",
+        'numC': numC
+    })
+
     classKeys = sorted([key for key in request.POST.keys() if ("class" in key)])
     strengthKeys = sorted([key for key in request.POST.keys() if ("strength" in key)])
 
@@ -161,8 +167,13 @@ def make(request):
         sched.save()
         student = Student.objects.get(user=request.user)
         print(student.name)
-        student.schedule = sched
-        print(sched.get_classes())
+        try: 
+            student.schedule = sched
+            print(sched.get_classes())
+        # raise an error, if multiple entries about one class
+        except Class.MultipleObjectsReturned:
+            print("Multiple same entries")
+            return multiple_entries_error
         student.save()
 
     return HttpResponseRedirect(reverse('student profile'))

@@ -421,4 +421,24 @@ class MakeTest(TestCase):
         }).content)
 
         self.assertEqual(expected, actual)
+        
+    # Test Student Object with null schedule
+    def test_null_schedule(self):
+        request = self.request_factory.post(reverse('studentprofile:generateSchedule'),
+        {'class1': [''], 'strength1': [''],
+         'class2': [''], 'strength2': [''], 
+         'class3': [''], 'strength3': [''],
+         'class4': [''], 'strength4': [''],
+         'class5': [''], 'strength5': ['']}) #no class entered
+
+        request.user = self.user
+        actual = len(make(request).content)
+
+        numC = [1, 1, 1, 1, 1]
+        expected = len(render(request, 'studentprofile/schedule.html', {
+        'error_message': "Entering one or more classes to complete your schedule.",
+        'numC': numC
+        }).content)
+
+        self.assertEqual(expected, actual)
 

@@ -14,7 +14,7 @@ def submit_profile(request):
     user = User.objects.get(pk=request.user.id)
 
     # Error for if user name is null and its the first time the user is logging in
-    null_name_error_create = render(request, 'login/index.html', { # Redirects the user to the login page again
+    null_name_error_create = render(request, 'studentprofile.html', { # Redirects the user to the login page again
         'error_message': "Username cannot be blank.", # Description for the error message displayed
     })
 

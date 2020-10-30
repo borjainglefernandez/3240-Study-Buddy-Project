@@ -131,7 +131,7 @@ class SubmitProfileTest(TestCase):
         actual = len(submit_profile(request).content)
 
         num = [1,1]
-        expected = len(render(request, 'login/index.html', {
+        expected = len(render(request, 'studentprofile.html', {
         'error_message': "Username cannot be blank.",
         }).content)
 
@@ -397,6 +397,26 @@ class MakeTest(TestCase):
         numC = [1, 1, 1, 1, 1]
         expected = len(render(request, 'studentprofile/schedule.html', {
         'error_message': "One or more courses inputted does not exist.",
+        'numC': numC
+        }).content)
+
+        self.assertEqual(expected, actual)
+        
+    # Test error message when a class is entered multiple times
+    def test_make_class_Entered_multiple_times(self):
+        request = self.request_factory.post(reverse('studentprofile:generateSchedule'),
+        {'class1': ['CS 3330'], 'strength1': ['1'],
+         'class2': ['CS 3330'], 'strength2': ['3'], # CS 3330 is a repeat entry of class1
+         'class3': ['CS 3240'], 'strength3': ['1'],
+         'class4': ['CS 2150'], 'strength4': ['2'],
+         'class5': ['ECON 2020'], 'strength5': ['1']})
+
+        request.user = self.user
+        actual = len(make(request).content)
+
+        numC = [1, 1, 1, 1, 1]
+        expected = len(render(request, 'studentprofile/schedule.html', {
+        'error_message': "One or more classes entered multiple times. Each course field should be unique.",
         'numC': numC
         }).content)
 

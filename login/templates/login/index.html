@@ -9,7 +9,8 @@ If the user is authenticated then we do not have to log them in
 {% if user.is_authenticated %}
 <p>You are logged in as {{ user.username }} </p>
 <a href="{% provider_login_url 'google' %}">Sign into different account</a>
-
+    <br>
+<a href="groups/create">Create group</a>
 <!--
 If the user is not authenticated then we have to log them in
 before we can store any of their information

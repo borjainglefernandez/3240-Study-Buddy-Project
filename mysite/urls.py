@@ -22,7 +22,7 @@ app_name = "mysite"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name = "login/index.html")),
+    path('', TemplateView.as_view(template_name = "login/index.html"), name='home'),
     path('accounts/', include('allauth.urls')),
     path('', include("studentprofile.urls")),
     path('', include("studygroups.urls")),

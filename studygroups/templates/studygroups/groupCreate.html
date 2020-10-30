@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container my-4 py-2 grey align-center mx-auto">
+        <h4>Create your group below!</h4>
+        <!-- Check first to see if there is an error message that needs to be displayed, and display it  -->
+        <p>{% if error_message %}
+            <strong>{{ error_message }}</strong>{% endif %}</p>
+
+        <form action="{% url 'studygroups:generateGroup' %}" method="post">
+
+            {% csrf_token %}
+            <!--
+             Label for the student's name
+            -->
+            <div class="form-group w-100 p-3 off-white">
+                <label for="Name"> Name</label>
+                <input type="text" class="form-control" name="Name" id="Name" placeholder="Enter name for group"
+                       value="">
+            </div>
+            <!--
+             Label for the student's year
+            -->
+            <div class="form-group w-100 p-3 off-white">
+                <label for="Size">Size</label>
+                <select id="Size" name="Size">
+                    {% with '2 3 4 5 6 7 8 9' as sizeOptions %}
+                        {% for size in sizeOptions.split %}
+                            <option value={{ size }}>{{ size }}</option>
+                        {% endfor %}
+                    {% endwith %}
+                </select>
+            </div>
+
+            <div class="row my-4 mx-2 px-2 py-2" style="background: lightgray">
+                <input type="submit" value="Create Group">
+            </div>
+
+        </form>
+    </div>
+{% endblock %}

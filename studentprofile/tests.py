@@ -11,7 +11,86 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 
-# Create your tests here. 
+# Create your tests here.
+
+majors = ["Undeclared",
+                "Aerospace Engineering",
+                "African American and African Studies",
+                "American Studies",
+                "Anthropology",
+                "Archaeology",
+                "Architectural History",
+                "Architecture",
+                "Astronomy",
+                "Bachelor of Interdisciplinary Studies",
+                "Bachelor of Professional Studies in Health Sciences Management",
+                "Biology",
+                "Biomedical Engineering",
+                "Chemical Engineering",
+                "Chemistry",
+                "Civil Engineering",
+                "Classics",
+                "Cognitive Science",
+                "Commerce",
+                "Comparative Literature",
+                "Computer Engineering",
+                "Computer Science (B.A.)",
+                "Computer Science (B.S.)",
+                "Dance",
+                "Drama",
+                "East Asian Languages, Literatures and Culture",
+                "Economics",
+                "Electrical Engineering",
+                "Engineering Science",
+                "English",
+                "Environmental Sciences",
+                "Environmental Thought and Practice",
+                "Five-Year Teacher Education Program",
+                "French",
+                "German",
+                "German Studies",
+                "Global Studies",
+                "Global Sustainability Minor",
+                "Historic Preservation Minor",
+                "History",
+                "History of Art",
+                "Human Biology",
+                "Interdisciplinary Major of Global Studies",
+                "Jewish Studies",
+                "Kinesiology(BSEd)",
+                "Latin American Studies",
+                "Linguistics",
+                "Materials Science and Engineering",
+                "Mathematics",
+                "Mechanical Engineering",
+                "Media Studies",
+                "Medieval Studies",
+                "Middle Eastern Language & Literature",
+                "Middle East Studies",
+                "Music",
+                "Neuroscience",
+                "Nursing",
+                "Philosophy",
+                "Physics",
+                "Political and Social Thought",
+                "Political Philosophy, Policy, and Law",
+                "Politics",
+                "Psychology",
+                "Religious Studies",
+                "Slavic Languages and Literatures",
+                "Sociology",
+                "South Asian Language & Literature",
+                "South Asian Studies",
+                "Spanish",
+                "Speech Communication Disorders",
+                "Statistics",
+                "Studio Art",
+                "Systems Engineering"
+                "Urban and Environmental Planning",
+                "Women, Gender & Sexuality",
+                "Youth & Social Innovation(BSEd)"
+                ]
+
 class StudentModelCreationTests(TestCase):
     # Boundary case
     def test_profile_is_created_with_default_year(self):
@@ -131,8 +210,10 @@ class SubmitProfileTest(TestCase):
         actual = len(submit_profile(request).content)
 
         num = [1,1]
+
         expected = len(render(request, 'studentprofile.html', {
         'error_message': "Username cannot be blank.",
+        'get_majors': majors,
         }).content)
 
         self.assertEqual(actual, expected)
@@ -197,6 +278,7 @@ class SubmitProfileTest(TestCase):
 
         expected = len(render(request, 'studentprofile.html', {
         'error_message': "Username cannot be blank.",
+        'get_majors': majors
         }).content)
 
         self.assertEqual(actual, expected)

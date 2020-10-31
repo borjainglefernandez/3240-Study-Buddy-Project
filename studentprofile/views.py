@@ -82,6 +82,18 @@ def make(request):
         'numC': numC
     })
 
+    # Error for inputting a class multiple times
+    multiple_entries_error = render(request, 'studentprofile/schedule.html', {
+        'error_message': "One or more classes entered multiple times. Each course field should be unique.",
+        'numC': numC
+    })
+    
+    # Error for null schedule in Student Object
+    null_schedule_error = render(request, 'studentprofile/schedule.html', {
+        'error_message': "Entering one or more classes to complete your schedule.",
+        'numC': numC
+    })
+    
     classKeys = sorted([key for key in request.POST.keys() if ("class" in key)])
     strengthKeys = sorted([key for key in request.POST.keys() if ("strength" in key)])
 
@@ -99,6 +111,10 @@ def make(request):
                 good = False
                 return strenth_range_error
 
+        # If no class or strength is entered, raise an error
+        elif request.POST[strengthKeys[i]] == '' and request.POST[classKeys[i]] == '':
+            return null_schedule_error
+        
         # If one or more strengths inputted are blank, raise an error
         elif request.POST[strengthKeys[i]] == '':
             return not_enough_strengths_error
@@ -161,8 +177,13 @@ def make(request):
         sched.save()
         student = Student.objects.get(user=request.user)
         print(student.name)
-        student.schedule = sched
-        print(sched.get_classes())
+        try:
+            student.schedule = sched
+            print(sched.get_classes())
+        # raises an error if multiple entries for same class
+        except Class.MultipleObjectsReturned:
+            print("Multiple same class entries")
+            return multiple_entries_error
         student.save()
 
     return HttpResponseRedirect(reverse('student profile'))

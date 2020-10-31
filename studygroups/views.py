@@ -32,3 +32,40 @@ def makeGroup(request):
 
 
     return HttpResponseRedirect(reverse('home'))
+
+def joinGroup(request):
+
+    try:
+        student = Student.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect(reverse('home'))
+
+    # Obtain the study group based on the id
+    studyGroup = StudyGroup.objects.get(pk = int(request.POST['Group']))
+    studyGroup.save()
+
+    # Add student to group
+    studyGroup.members.add(student)
+    studyGroup.save()
+
+
+    return HttpResponseRedirect(reverse('home'))
+
+def leaveGroup(request):
+
+    try:
+        student = Student.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect(reverse('home'))
+
+    # Obtain the study group based on the id
+    studyGroup = StudyGroup.objects.get(pk = int(request.POST['Group']))
+    studyGroup.save()
+
+    # Remove student from group
+    studyGroup.members.remove(student)
+    studyGroup.save()
+
+
+    return HttpResponseRedirect(reverse('home'))
+

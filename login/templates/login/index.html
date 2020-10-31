@@ -11,14 +11,46 @@ If the user is authenticated then we do not have to log them in
 <a href="{% provider_login_url 'google' %}">Sign into different account</a>
     <br>
 <a href="groups/create">Create group</a>
+
 <h2 class="mb-3">Available Study Groups: </h2>
-<div class="row">
+<!--
+Displays all the groups that have been created
+-->
 {% for group in groups_list %}
+    <div class="row">
         <div class="col-md-9 col-sm-12">
             <strong>{{ group }}</strong>
+
+            <strong>  Capacity:</strong>
+            {{group.maxSize}}
+
+            <!--
+            If user is part of group, display leave group button
+            -->
+            {% if user.student in group.get_members %}
+                <form action="{% url 'studygroups:leaveGroup' %}" method="post">
+                    {% csrf_token %}
+                    <!--
+                    Hidden input that has the id of the group that it sends to the appropriate function
+                    -->
+                    <input type="hidden" name="Group" id="Group" value={{group.id}}>
+                    <button type="submit" class="btn btn-primary mx-7" name="edit">Leave Group</button>
+                </form>
+
+            <!--
+            If user is not part of group, display join group button
+            -->
+            {% else %}
+                <form action="{% url 'studygroups:joinGroup' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="Group" id="Group" value={{group.id}}>
+                    <button type="submit" class="btn btn-primary mx-7" name="edit">Join Group</button>
+                </form>
+
+            {% endif %}
         </div>
+    </div>
 {% endfor %}
-</div>
 
 
 <!--

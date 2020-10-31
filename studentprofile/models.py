@@ -55,5 +55,5 @@ class Student(models.Model):
     edit = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.username
+        return self.name
 

@@ -11,6 +11,16 @@ If the user is authenticated then we do not have to log them in
 <a href="{% provider_login_url 'google' %}">Sign into different account</a>
     <br>
 <a href="groups/create">Create group</a>
+<h2 class="mb-3">Available Study Groups: </h2>
+<div class="row">
+{% for group in groups_list %}
+        <div class="col-md-9 col-sm-12">
+            <strong>{{ group }}</strong>
+        </div>
+{% endfor %}
+</div>
+
+
 <!--
 If the user is not authenticated then we have to log them in
 before we can store any of their information

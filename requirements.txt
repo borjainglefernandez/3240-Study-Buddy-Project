@@ -6,3 +6,4 @@ social-auth-app-django==4.0.0
 social-auth-core==3.3.3
 django-allauth==0.42.0
 pandas==1.1.2
+zoomus==1.1.3

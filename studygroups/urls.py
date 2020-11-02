@@ -11,4 +11,5 @@ urlpatterns = [
     path('groups/create/make', views.makeGroup, name='generateGroup'),
     path('groups/join', views.joinGroup, name='joinGroup'),
     path('groups/leave', views.leaveGroup, name='leaveGroup'),
+    path('groups/<str:StudyGroup_name>', views.studygroup_detail, name= 'groupPage')
 ]

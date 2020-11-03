@@ -15,5 +15,9 @@ class StudyGroup(models.Model):
     members = models.ManyToManyField(Student)
     zoom = models.OneToOneField(ZoomInfo, on_delete = models.DO_NOTHING, null = True)
 
+    def get_members(self):
+        members = list(self.members.all())
+        return members
+
     def __str__(self):
         return self.name + ": " + str([str(m) for m in self.members.all()])

@@ -4,6 +4,7 @@ from studentprofile.models import Student, Schedule, Course, Class
 from django.contrib.auth.models import User
 from django.views import generic
 from django.shortcuts import render, reverse
+from studygroups.models import StudyGroup
 
 # Creates a local variable containing all the UVa majors
 majors = ["Undeclared",
@@ -190,4 +191,13 @@ class ProfileView(generic.ListView):
     # This is a feature of the generic.ListView
     def get_queryset(self):
         return majors #returns the list containing all the UVa majors
+
+class IndexView(generic.ListView):
+    template_name = 'login/index.html'
+    context_object_name = 'groups_list'
+
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return StudyGroup.objects.all()
+
 

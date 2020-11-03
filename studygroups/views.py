@@ -28,8 +28,11 @@ def makeGroup(request):
     except:
         return HttpResponseRedirect(reverse('home'))
 
-    if StudyGroup.objects.get(name=request.POST["Name"]):
-        return repeated_name_error
+    try:
+        if StudyGroup.objects.get(name=request.POST["Name"]):
+            return repeated_name_error
+    except:
+        print("All good!")
 
     studyGroup = StudyGroup(name=request.POST["Name"], maxSize=request.POST["Size"])
     studyGroup.save()

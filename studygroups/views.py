@@ -17,6 +17,10 @@ def makeGroup(request):
         'error_message': "Group name cannot be blank.",  # Description for the error message displayed
     })
 
+    repeated_name_error = render(request, 'studygroups/groupCreate.html', {  
+        'error_message': "Group name is taken, please try another name",  # Description for the error message displayed
+    })
+
     try:
         student = Student.objects.get(user=request.user)
         if request.POST["Name"].strip() == "":
@@ -24,6 +28,11 @@ def makeGroup(request):
     except:
         return HttpResponseRedirect(reverse('home'))
 
+    try:
+        if StudyGroup.objects.get(name=request.POST["Name"]):
+            return repeated_name_error
+    except:
+        print("All good!")
 
     studyGroup = StudyGroup(name=request.POST["Name"], maxSize=request.POST["Size"])
     studyGroup.save()

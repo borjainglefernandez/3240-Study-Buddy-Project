@@ -17,6 +17,10 @@ def makeGroup(request):
         'error_message': "Group name cannot be blank.",  # Description for the error message displayed
     })
 
+    repeated_name_error = render(request, 'studygroups/groupCreate.html', {
+        'error_message': "Group name is taken, please try another name",  # Description for the error message displayed
+    })
+
     # Error for if class number is not a digit
     class_number_digit_error = render(request, 'studygroups/groupCreate.html', {
         'error_message': "Class number must be a digit.",
@@ -48,6 +52,12 @@ def makeGroup(request):
             return null_name_error  # cannot have an empty group name
     except:
         return HttpResponseRedirect(reverse('home'))
+
+    try:
+        if StudyGroup.objects.get(name=request.POST["Name"]):
+            return repeated_name_error
+    except:
+        print("All good!")
 
     courseParts = request.POST["Class"].strip().split(" ")
 

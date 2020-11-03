@@ -11,7 +11,7 @@
 
             {% csrf_token %}
             <!--
-             Label for the student's name
+             Label for the group's name
             -->
             <div class="form-group w-100 p-3 off-white">
                 <label for="Name"> Name</label>
@@ -19,7 +19,7 @@
                        value="">
             </div>
             <!--
-             Label for the student's year
+             Label for the group's size
             -->
             <div class="form-group w-100 p-3 off-white">
                 <label for="Size">Size</label>
@@ -30,6 +30,15 @@
                         {% endfor %}
                     {% endwith %}
                 </select>
+            </div>
+
+             <!--
+             Label for the group's course
+            -->
+            <div class="form-group w-100 p-3 off-white">
+                <label for="Class"> Course</label>
+                <input type="text" class="form-control" name="Class" id="Class" placeholder="Enter the course associated with this study group"
+                       value="">
             </div>
 
             <div class="row my-4 mx-2 px-2 py-2" style="background: lightgray">

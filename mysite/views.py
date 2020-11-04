@@ -89,8 +89,10 @@ def home(request):
     return HttpResponse("Hello, world! You're at the site.")
 
 def submit_profile(request):
-    # Fetch the current user
-    user = User.objects.get(pk=request.user.id)
+    try:
+        user = User.objects.get(pk=request.user.id) # Fetch the current user
+    except:
+        return HttpResponseRedirect(reverse('home'))
 
     # Error for if user name is null and its the first time the user is logging in
     null_name_error_create = render(request, 'studentprofile.html', { # Redirects the user to the login page again
@@ -173,7 +175,10 @@ def submit_profile(request):
         print("no :( -----------------------------")
 
 def edit_profile(request):
-    student = Student.objects.get(user=request.user)
+    try:
+        student = Student.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect(reverse('home'))
     student.edit = True
     print(student)
     student.save()

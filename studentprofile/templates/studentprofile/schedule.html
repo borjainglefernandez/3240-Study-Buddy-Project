@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if user.is_authenticated %}
 <div class="container my-4 py-2 grey align-center mx-auto">
     <h4>Create your schedule below!</h4>
 
@@ -35,4 +36,7 @@
 
     </form>
 </div>
+{% else %}
+        <h4>Please login before making your schedule!</h4>
+{% endif %}
 {% endblock %}

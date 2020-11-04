@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if user.is_authenticated %}
     <h1>{{StudyGroup.name}}</h1>
     <p><strong>Size: </strong>{{StudyGroup.maxSize}}</p>
     
@@ -13,5 +14,8 @@
 
     <p><strong>Course: </strong>{{StudyGroup.course}}</p>
     <p><strong>Zoom link: </strong>{{StudyGroup.ZoomInfo}}</p>
-
+{% else %}
+    <h4>Please login before viewing a study group!</h4>
+{% endif %}
 {% endblock %}
+

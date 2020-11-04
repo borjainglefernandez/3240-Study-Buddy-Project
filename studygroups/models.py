@@ -22,6 +22,7 @@ class StudyGroup(models.Model):
         members = list(self.members.all())
         return members
 
+    #A method that prints only the name of the member in a group
     def get_members_string(self):
         members = list(self.members.all())
         string_members = ""
@@ -33,5 +34,17 @@ class StudyGroup(models.Model):
             string_members += str(member)
         return string_members
 
+    # A method that prints the name & email of the member in a group
+    def get_members_email(self):
+        members = list(self.members.all())
+        string_members_email = ""
+
+        # We do this so that the last element does not have a comma
+        for i, member in enumerate(members):
+            if i:
+                string_members_email += ", "
+            string_members_email += str(member)+" (" + str(member.get_email()) + ")"
+        return string_members_email
+    
     def __str__(self):
         return self.name + ": " + str([str(m) for m in self.members.all()])

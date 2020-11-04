@@ -98,7 +98,6 @@ def makeGroup(request):
     # After a group is created, redirect the users to the group page
     context = {
         'StudyGroup':studyGroup,
-        "members": studyGroup.members
     }
     return render(request, 'grouppage.html', context)
 
@@ -142,14 +141,15 @@ def leaveGroup(request):
 def studygroup_detail(request, StudyGroup_name):
     try: 
         studygroup = StudyGroup.objects.get(name= StudyGroup_name)
+        student = Student.objects.get(user=request.user)
         
-    except StudyGroup.DoesNotExist:
+    except StudyGroup.DoesNotExist or Student.DoesNotExist:
         return HttpResponseRedirect(reverse('home'))
     
     print(StudyGroup_name)
     context = {
         "StudyGroup":studygroup,
-        "members": studygroup.members
+        "Student":student
     }
     # Refers to the group page html
     return render(request, 'grouppage.html', context)

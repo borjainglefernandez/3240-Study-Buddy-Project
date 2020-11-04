@@ -56,4 +56,7 @@ class Student(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_email(self):
+        return self.user.email
 

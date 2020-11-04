@@ -3,8 +3,8 @@
 {% block content %}
     <h1>{{StudyGroup.name}}</h1>
     <p>Size: {{StudyGroup.maxSize}}</p>
-    <p>Members: {{members}}</p>
-    <p>Course: ???</p>
+    <p>Members: {{StudyGroup.get_members_string}}</p>
+    <p>Course: {{StudyGroup.course}}</p>
     <p>Zoom link: {{StudyGroup.ZoomInfo}}</p>
 
 {% endblock %}

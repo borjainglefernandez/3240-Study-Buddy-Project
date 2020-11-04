@@ -12,7 +12,7 @@ If the user is authenticated then we do not have to log them in
     <br>
 <a href="groups/create">Create group</a>
 
-<h2 class="mb-3">Available Study Groups: </h2>
+<h4 class="mb-3"><br>Available Study Groups: </h4>
 <!--
 Displays all the groups that have been created
 -->
@@ -22,8 +22,9 @@ Displays all the groups that have been created
             <!--
             Displays the group as a link and sends the group name as a parameter for the url
             -->
-            <strong><a class = "mx-5" href="{% url 'studygroups:groupPage' group.name %}">{{ group }}</a></strong>
-
+            <br>
+            <strong><a class = "mb-3" href="{% url 'studygroups:groupPage' group.name %}">{{ group }}</a></strong>
+            <br>
 
             <strong>  Capacity:</strong>
             {{group.maxSize}}
@@ -38,7 +39,7 @@ Displays all the groups that have been created
                     Hidden input that has the id of the group that it sends to the appropriate function
                     -->
                     <input type="hidden" name="Group" id="Group" value={{group.id}}>
-                    <button type="submit" class="btn btn-primary mx-7" name="edit">Leave Group</button>
+                    <button type="submit" class="btn btn-primary mx-7 " name="edit">Leave Group</button>
                 </form>
 
             <!--

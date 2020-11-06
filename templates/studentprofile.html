@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block studentprofile %}
+{% if user.is_authenticated %}
 
 <!--
 If the user already has not stored their profile information display
@@ -144,4 +145,8 @@ If the user already has already completed profile, display their profile
 </div>
 </div>
 {% endif %}
+{% else %}
+    <h4>Please login before viewing your profile!</h4>
+{% endif %}
 {% endblock%}
+

@@ -5,10 +5,9 @@ from studentprofile.models import Student
 # Create your models here.
 class ZoomInfo(models.Model):
     code = models.CharField(max_length=15)
-    join_url = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return str(self.code) + " " + str(self.join_url)
+        return self.code
 
 class StudyGroup(models.Model):
     name = models.CharField(max_length=100)

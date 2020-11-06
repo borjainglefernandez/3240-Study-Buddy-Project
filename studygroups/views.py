@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from studentprofile.models import Schedule, Course, Class, Student
-from .models import StudyGroup
+from .models import StudyGroup, ZoomInfo
 from django.contrib import messages
 from django.contrib.auth.models import User
 
@@ -89,8 +89,9 @@ def makeGroup(request):
     else:
         return class_input_error
 
-
-    studyGroup = StudyGroup(name=request.POST["Name"], maxSize=request.POST["Size"], course= course)
+    zoomRoom = ZoomInfo(url="https://virginia.zoom.us/j/6054369524", code="6054369524")
+    zoomRoom.save()
+    studyGroup = StudyGroup(name=request.POST["Name"], maxSize=request.POST["Size"], course= course, zoom=zoomRoom)
     studyGroup.save()
     studyGroup.members.add(student)
     studyGroup.save()

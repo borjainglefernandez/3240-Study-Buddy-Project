@@ -22,6 +22,9 @@ Displays all the groups that have been created
         <div class="row">
             <strong class="mr-1">Capacity: </strong> {{group.maxSize}}
         </div>
+        <div class="row">
+            <a href="{% url 'studygroups:groupPage' group.name %}">View Group</a>
+        </div>
             <!--
             If user is part of group, display leave group button
             -->

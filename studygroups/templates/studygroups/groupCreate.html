@@ -14,7 +14,7 @@
             <!--
              Label for the group's name
             -->
-            <div class="form-group w-100 p-3 off-white">
+            <div class="form-group w-100 mb-3 off-white px-3 pb-2 pt-3 rounded">
                 <label for="Name"> Name</label>
                 <input type="text" class="form-control" name="Name" id="Name" placeholder="Enter name for group"
                        value="">
@@ -22,7 +22,7 @@
             <!--
              Label for the group's size
             -->
-            <div class="form-group w-100 p-3 off-white">
+            <div class="form-group w-100 mb-3 off-white px-3 pb-2 pt-3 rounded">
                 <label for="Size">Size</label>
                 <select id="Size" name="Size">
                     {% with '2 3 4 5 6 7 8 9' as sizeOptions %}
@@ -36,14 +36,14 @@
              <!--
              Label for the group's course
             -->
-            <div class="form-group w-100 p-3 off-white">
+            <div class="form-group w-100 mb-3 off-white px-3 pb-2 pt-3 rounded">
                 <label for="Class"> Course</label>
                 <input type="text" class="form-control" name="Class" id="Class" placeholder="Enter the course associated with this study group with format [XXX 1234]"
                        value="">
             </div>
 
-            <div class="row my-4 mx-2 px-2 py-2" style="background: lightgray">
-                <input type="submit" value="Create Group">
+            <div class="row mb-3 off-white px-3 pb-2 pt-3 rounded">
+                <input class="btn btn-primary" type="submit" value="Create Group">
             </div>
 
         </form>

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if user.is_authenticated %}
     <div class="container my-4 py-2 grey align-center mx-auto">
         <h4>Create your group below!</h4>
         <!-- Check first to see if there is an error message that needs to be displayed, and display it  -->
@@ -11,7 +12,7 @@
 
             {% csrf_token %}
             <!--
-             Label for the student's name
+             Label for the group's name
             -->
             <div class="form-group w-100 p-3 off-white">
                 <label for="Name"> Name</label>
@@ -19,7 +20,7 @@
                        value="">
             </div>
             <!--
-             Label for the student's year
+             Label for the group's size
             -->
             <div class="form-group w-100 p-3 off-white">
                 <label for="Size">Size</label>
@@ -32,10 +33,22 @@
                 </select>
             </div>
 
+             <!--
+             Label for the group's course
+            -->
+            <div class="form-group w-100 p-3 off-white">
+                <label for="Class"> Course</label>
+                <input type="text" class="form-control" name="Class" id="Class" placeholder="Enter the course associated with this study group with format [XXX 1234]"
+                       value="">
+            </div>
+
             <div class="row my-4 mx-2 px-2 py-2" style="background: lightgray">
                 <input type="submit" value="Create Group">
             </div>
 
         </form>
     </div>
+{% else %}
+    <h4>Please login before creating a group!</h4>
+{% endif %}
 {% endblock %}

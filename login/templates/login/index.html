@@ -12,14 +12,19 @@ If the user is authenticated then we do not have to log them in
     <br>
 <a href="groups/create">Create group</a>
 
-<h2 class="mb-3">Available Study Groups: </h2>
+<h4 class="mb-3"><br>Available Study Groups: </h4>
 <!--
 Displays all the groups that have been created
 -->
 {% for group in groups_list %}
     <div class="row">
         <div class="col-md-9 col-sm-12">
-            <strong>{{ group }}</strong>
+            <!--
+            Displays the group as a link and sends the group name as a parameter for the url
+            -->
+            <br>
+            <strong><a class = "mb-3" href="{% url 'studygroups:groupPage' group.name %}">{{ group }}</a></strong>
+            <br>
 
             <strong>  Capacity:</strong>
             {{group.maxSize}}
@@ -34,18 +39,29 @@ Displays all the groups that have been created
                     Hidden input that has the id of the group that it sends to the appropriate function
                     -->
                     <input type="hidden" name="Group" id="Group" value={{group.id}}>
-                    <button type="submit" class="btn btn-primary mx-7" name="edit">Leave Group</button>
+                    <button type="submit" class="btn btn-primary mx-7 " name="edit">Leave Group</button>
                 </form>
 
             <!--
-            If user is not part of group, display join group button
+            If user is not part of group, display join group button (if space available)
             -->
             {% else %}
+                    <!--
+                    If there is available space in the group display join group button
+                    -->
+                {% if group.get_members|length < group.maxSize %}
                 <form action="{% url 'studygroups:joinGroup' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="Group" id="Group" value={{group.id}}>
                     <button type="submit" class="btn btn-primary mx-7" name="edit">Join Group</button>
                 </form>
+
+                <!--
+                If no space left, say group is full
+                -->
+                {% else %}
+                    <strong> Group Full </strong>
+                {% endif %}
 
             {% endif %}
         </div>

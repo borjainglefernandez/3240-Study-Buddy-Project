@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if user.is_authenticated %}
     <h1>{{StudyGroup.name}}</h1>
-    <p>Size: {{StudyGroup.maxSize}}</p>
-    <p>Zoom link: {{StudyGroup.ZoomInfo}}</p>
+    <p><strong>Size: </strong>{{StudyGroup.maxSize}}</p>
+    
+    {% if user.student in StudyGroup.get_members %}
+        <p><strong>Members: </strong>{{StudyGroup.get_members_email}}</p>
+        <p>You can contact your group members by email to schedule a time to meet!</p>
+    {% else %}
+        <p><strong>Members: </strong>{{StudyGroup.get_members_string}}</p>
+    {% endif %}
 
+    <p><strong>Course: </strong>{{StudyGroup.course}}</p>
+    <p><strong>Zoom link: </strong>{{StudyGroup.ZoomInfo}}</p>
+{% else %}
+    <h4>Please login before viewing a study group!</h4>
+{% endif %}
 {% endblock %}
+

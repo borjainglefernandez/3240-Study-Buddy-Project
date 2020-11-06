@@ -7,31 +7,26 @@
 If the user is authenticated then we do not have to log them in
 -->
 {% if user.is_authenticated %}
-<p>You are logged in as {{ user.username }} </p>
-<a href="{% provider_login_url 'google' %}">Sign into different account</a>
-    <br>
-<a href="groups/create">Create group</a>
+Don't see a group that fits you? <a href="groups/create">Create</a> a group instead!
 
-<h4 class="mb-3"><br>Available Study Groups: </h4>
+<h4 class="my-3">Available Study Groups: </h4>
 <!--
 Displays all the groups that have been created
 -->
 {% for group in groups_list %}
-    <div class="row">
+    <div class="row mb-3 off-white px-3 pb-2 pt-3 rounded">
         <div class="col-md-9 col-sm-12">
-            <!--
-            Displays the group as a link and sends the group name as a parameter for the url
-            -->
-            <br>
-            <strong><a class = "mb-3" href="{% url 'studygroups:groupPage' group.name %}">{{ group }}</a></strong>
-            <br>
-
-            <strong>  Capacity:</strong>
-            {{group.maxSize}}
-
+        <div class="row">
+            <strong>{{ group }}</strong>
+        </div>
+        <div class="row">
+            <strong class="mr-1">Capacity: </strong> {{group.maxSize}}
+        </div>
             <!--
             If user is part of group, display leave group button
             -->
+        </div>
+        <div class="col-md-3">
             {% if user.student in group.get_members %}
                 <form action="{% url 'studygroups:leaveGroup' %}" method="post">
                     {% csrf_token %}
@@ -74,7 +69,7 @@ If the user is not authenticated then we have to log them in
 before we can store any of their information
 -->
 {% else %}
-    <h1>Login with Google to create an account!</h1>
-    <a href="{% provider_login_url 'google' %}">Login with Google</a>
+    <h2>Welcome to Study Buddy Finder!</h2>
+    Click <a href="{% provider_login_url 'google' %}">here</a> to log in and access the site.
 {% endif %}
 {% endblock%}

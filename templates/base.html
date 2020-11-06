@@ -18,18 +18,16 @@
         <a href="{% provider_login_url 'google' %}">Log In</a>
     {% else %}
         <a href="/profile">My Profile</a>
+        <a href="{% provider_login_url 'google' %}">Sign into a Different Account</a>
     {% endif %}
 </div>
 <div class="container">
     <div class="m-5 row justify-content-center">
         <div class="col-8">
-            <h1 class="mt-2">Study Buddy</h1>
-            <hr class="mt-0 mb-4">
             {% block content %}
             {% endblock %}
             {% block studentprofile %}
             {% endblock %}
-
         </div>
     </div>
 </div>

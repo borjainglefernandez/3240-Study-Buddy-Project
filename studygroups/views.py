@@ -5,9 +5,10 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from studentprofile.models import Schedule, Course, Class, Student
-from .models import StudyGroup
+from .models import StudyGroup, ZoomInfo
 from django.contrib import messages
 from django.contrib.auth.models import User
+from zoomus import ZoomClient
 
 # Create your views here.
 def makeGroup(request):
@@ -24,8 +25,15 @@ def makeGroup(request):
     except:
         return HttpResponseRedirect(reverse('home'))
 
+    # client = ZoomClient("NGhiUAjRTOigh2GRNv1_ag", "qh354yD1YirNsk1vdUNcoKHShMAz7eWl")
 
-    studyGroup = StudyGroup(name=request.POST["Name"], maxSize=request.POST["Size"])
+    # meeting = client.meeting.create(user_id="634411", topic=request.POST["Name"], type=1, password="studybuddy").json()
+    # print((meeting))
+    #['response']
+
+    zoomMeeting = ZoomInfo(code = str("6044369524"), join_url = str("https://virginia.zoom.us/j/6054369524"))
+    zoomMeeting.save()
+    studyGroup = StudyGroup(name=request.POST["Name"], maxSize=request.POST["Size"], zoom=zoomMeeting)
     studyGroup.save()
     studyGroup.members.add(student)
     studyGroup.save()

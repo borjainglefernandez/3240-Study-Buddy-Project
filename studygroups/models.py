@@ -6,10 +6,10 @@ from login.models import Course
 
 # Create your models here.
 class ZoomInfo(models.Model):
-    code = models.CharField(max_length=15)
-
+    code = models.CharField(max_length=15, null=True)
+    url = models.CharField(max_length=100, null=True)
     def __str__(self):
-        return self.code
+        return str(self.code) + " " + str(self.url)
 
 class StudyGroup(models.Model):
     name = models.CharField(max_length=100)

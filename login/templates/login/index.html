@@ -6,65 +6,142 @@
 <!--
 If the user is authenticated then we do not have to log them in
 -->
-{% if user.is_authenticated %}
+{% if user.student %}
 Don't see a group that fits you? <a href="groups/create">Create</a> a group instead!
 
-<h4 class="my-3">Available Study Groups: </h4>
-<!--
-Displays all the groups that have been created
--->
-{% for group in groups_list %}
-    <div class="row mb-3 off-white px-3 pb-2 pt-3 rounded">
+<div class="container">
+    <div class="row">
         <div class="col-md-9 col-sm-12">
-        <div class="row">
-            <strong>{{ group }}</strong>
-        </div>
-        <div class="row">
-            <strong class="mr-1">Capacity: </strong> {{group.maxSize}}
-        </div>
-        <div class="row">
-            <a href="{% url 'studygroups:groupPage' group.name %}">View Group</a>
-        </div>
+            <h4 class="my-3">Suggested Study Groups: </h4>
             <!--
-            If user is part of group, display leave group button
+            Displays all the suggested study groups for the user
             -->
-        </div>
-        <div class="col-md-3">
-            {% if user.student in group.get_members %}
-                <form action="{% url 'studygroups:leaveGroup' %}" method="post">
-                    {% csrf_token %}
-                    <!--
-                    Hidden input that has the id of the group that it sends to the appropriate function
-                    -->
-                    <input type="hidden" name="Group" id="Group" value={{group.id}}>
-                    <button type="submit" class="btn btn-primary mx-7 " name="edit">Leave Group</button>
-                </form>
+            {% if not user.student.get_suggested_groups %}
+                There are no suggestions yet. Try back later or create a group yourself!
+            {% endif %}
+            {% for group in user.student.get_suggested_groups %}
+            <div class="row mb-3 off-white px-3 pb-2 pt-3 rounded">
+                <div class="col-md-9 col-sm-12">
+                    <div class="row">
+                        <strong>{{ group }}</strong>
+                    </div>
+                    <div class="row">
+                        <strong class="mr-1">Capacity: </strong> {{group.maxSize}}
+                    </div>
 
-            <!--
-            If user is not part of group, display join group button (if space available)
-            -->
-            {% else %}
+                    <div class="row">
+                        <strong class="mr-1">Course: </strong> {{group.course}}
+                    </div>
+
+                    <div class="row">
+                        <a href="{% url 'studygroups:groupPage' group.name %}">View Group</a>
+                    </div>
+                    <!--
+                    If user is part of group, display leave group button
+                    -->
+                </div>
+                <div class="col-md-3">
+                    {% if user.student in group.get_members %}
+                    <form action="{% url 'studygroups:leaveGroup' %}" method="post">
+                        {% csrf_token %}
+                        <!--
+                        Hidden input that has the id of the group that it sends to the appropriate function
+                        -->
+                        <input type="hidden" name="Group" id="Group" value={{group.id}}>
+                        <button type="submit" class="btn btn-primary mx-7 " name="edit">Leave Group</button>
+                    </form>
+
+                    <!--
+                    If user is not part of group, display join group button (if space available)
+                    -->
+                    {% else %}
                     <!--
                     If there is available space in the group display join group button
                     -->
-                {% if group.get_members|length < group.maxSize %}
-                <form action="{% url 'studygroups:joinGroup' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="Group" id="Group" value={{group.id}}>
-                    <button type="submit" class="btn btn-primary mx-7" name="edit">Join Group</button>
-                </form>
+                    {% if group.get_members|length < group.maxSize %}
+                    <form action="{% url 'studygroups:joinGroup' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="Group" id="Group" value={{group.id}}>
+                        <button type="submit" class="btn btn-primary mx-7" name="edit">Join Group</button>
+                    </form>
 
-                <!--
-                If no space left, say group is full
-                -->
-                {% else %}
+                    <!--
+                    If no space left, say group is full
+                    -->
+                    {% else %}
                     <strong> Group Full </strong>
-                {% endif %}
+                    {% endif %}
 
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md">
+            <h4 class="my-3">Available Study Groups: </h4>
+            {% if not groups_list %}
+                There are no groups yet. Be the first to do so!
             {% endif %}
+            {% for group in groups_list %}
+            <div class="row mb-3 off-white px-3 pb-2 pt-3 rounded">
+                <div class="col-md-9 col-sm-12">
+                    <div class="row">
+                        <strong>{{ group }}</strong>
+                    </div>
+                    <div class="row">
+                        <strong class="mr-1">Capacity: </strong> {{group.maxSize}}
+                    </div>
+
+                    <div class="row">
+                        <strong class="mr-1">Course: </strong> {{group.course}}
+                    </div>
+
+                    <div class="row">
+                        <a href="{% url 'studygroups:groupPage' group.name %}">View Group</a>
+                    </div>
+                    <!--
+                    If user is part of group, display leave group button
+                    -->
+                </div>
+                <div class="col-md-3">
+                    {% if user.student in group.get_members %}
+                    <form action="{% url 'studygroups:leaveGroup' %}" method="post">
+                        {% csrf_token %}
+                        <!--
+                        Hidden input that has the id of the group that it sends to the appropriate function
+                        -->
+                        <input type="hidden" name="Group" id="Group" value={{group.id}}>
+                        <button type="submit" class="btn btn-primary mx-7 " name="edit">Leave Group</button>
+                    </form>
+
+                    <!--
+                    If user is not part of group, display join group button (if space available)
+                    -->
+                    {% else %}
+                    <!--
+                    If there is available space in the group display join group button
+                    -->
+                    {% if group.get_members|length < group.maxSize %}
+                    <form action="{% url 'studygroups:joinGroup' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="Group" id="Group" value={{group.id}}>
+                        <button type="submit" class="btn btn-primary mx-7" name="edit">Join Group</button>
+                    </form>
+
+                    <!--
+                    If no space left, say group is full
+                    -->
+                    {% else %}
+                    <strong> Group Full </strong>
+                    {% endif %}
+
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
-{% endfor %}
+</div>
 
 
 <!--
@@ -72,7 +149,7 @@ If the user is not authenticated then we have to log them in
 before we can store any of their information
 -->
 {% else %}
-    <h2>Welcome to Study Buddy Finder!</h2>
-    Click <a href="{% provider_login_url 'google' %}">here</a> to log in and access the site.
+<h2>Welcome to Study Buddy Finder!</h2>
+Click <a href="{% provider_login_url 'google' %}">here</a> to log in and access the site.
 {% endif %}
 {% endblock%}

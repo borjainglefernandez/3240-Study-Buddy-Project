@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 from login.models import Course
 
 # Create your models here.
@@ -59,4 +58,59 @@ class Student(models.Model):
     
     def get_email(self):
         return self.user.email
+
+    # Obtains a student's classes in order of strength
+    #
+    # Sorts it in ascending order
+    def get_classes_in_str_order(self):
+        result = []
+        classes = self.schedule.get_classes() # Get all of the students' classes
+
+        minstr = 9
+        minclass = None
+
+        while len(classes) > 0: # While there are classes left we haven't sorted
+            for clas in classes:
+                if clas.strength < minstr: # If class is the minimum strength
+                    minstr = clas.strength
+                    minclass = clas
+            result.append(minclass) # Add minimum class found to the result
+            classes.remove(minclass)
+            minstr = 9
+
+        return result
+
+    def get_suggested_groups(self):
+        from studygroups.models import StudyGroup # Doesn't work when I import it at the top
+        suggested_groups = []
+        relevant_groups = []
+        classes_sorted_by_str = self.get_classes_in_str_order() # Obtain students' classes in sorted order
+
+        # Get all groups with a course that the student has in their schedule
+        for group in StudyGroup.objects.all():
+            # 1.) Check if the groups' course matches a course in a students' schedule
+            # 2.) Check if the student is not already in the course
+            # 3.) Check if the group is full or not
+            if (str(group.course) in str(classes_sorted_by_str)) \
+                    and not(self in group.get_members()) \
+                    and not(len(group.get_members()) == group.maxSize):
+
+                relevant_groups.append(group)
+
+        # Sort relevant groups in order of suggestedness
+        #
+        # Iterate in order of strength of classes and see if a relevant class is found
+        for clas in classes_sorted_by_str:
+            for group in relevant_groups:
+                if str(clas) == str(group.course):
+                    suggested_groups.append(group)
+
+        # If we have more than 3 suggested groups, trim the list to only 3
+        if len(suggested_groups) > 3:
+            suggested_groups = suggested_groups[:3]
+
+        return suggested_groups
+
+
+
 

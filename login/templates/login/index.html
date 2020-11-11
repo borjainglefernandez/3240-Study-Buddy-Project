@@ -77,11 +77,13 @@ Don't see a group that fits you? <a href="groups/create">Create</a> a group inst
             {% endfor %}
         </div>
         <div class="col-md">
+            {% if user.student.get_available_groups %}
             <h4 class="my-3">Available Study Groups: </h4>
+            {% endif %}
             {% if not groups_list %}
                 There are no groups yet. Be the first to do so!
             {% endif %}
-            {% for group in groups_list %}
+            {% for group in user.student.get_available_groups %}
             {% if group.get_members|length < group.maxSize or user.student in group.get_members %}
             <!--
             Do not display study groups if student user not in the group and full in size 

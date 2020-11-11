@@ -125,8 +125,12 @@ class Student(models.Model):
             # 2.) Check if the group is full or not
             if (str(group.course) in str(classes_sorted_by_str)) \
                     and not(len(group.get_members()) == group.maxSize):
-
                 relevant_groups.append(group)
+            
+            # Adds the group to available group if the user is in it,
+            # even though the course does not match user's schedule
+            elif self in group.get_members(): 
+                available_groups.append(group)
 
         # Sort relevant groups in order of suggestedness
         #

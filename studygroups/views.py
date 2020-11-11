@@ -45,6 +45,11 @@ def makeGroup(request):
     not_enough_classes_error = render(request, 'studygroups/groupCreate.html', {
         'error_message': "You are missing the required course field.",
     })
+    
+    # Error for if there's a '/' in the name (or it will mess up the urls)
+    name_slash_error = render(request, 'studygroups/groupCreate.html', {
+        'error_message': "Group name can not contain characters like '/'.",
+    })
 
     try:
         student = Student.objects.get(user=request.user)
@@ -53,6 +58,12 @@ def makeGroup(request):
     except:
         return HttpResponseRedirect(reverse('home'))
 
+    try:
+        if '/' in request.POST["Name"]:
+            return name_slash_error 
+    except:
+        print("All good!")
+        
     try:
         if StudyGroup.objects.get(name=request.POST["Name"]):
             return repeated_name_error

@@ -105,6 +105,8 @@ class StudentModelCreationTests(TestCase):
         s3 = Student(name="s1")
         self.assertEqual(s3.name,"s1")
 
+    
+
     #Equivalence test
     def test_profile_saved_with_year(self):
         s4 = Student(name="s2Name",year=2,major="Math")
@@ -187,6 +189,7 @@ class SubmitProfileTest(TestCase):
                                              'Year': ['2021'],
                                              'Major': ['Systems Engineering'],
                                              'NumClass': ['2'],
+                                             'phone': ['6451827384'],
                                              'generate-schedule': ['']}) # Generate Schedule
         request.user = self.user
         actual = len(submit_profile(request).content)
@@ -205,6 +208,7 @@ class SubmitProfileTest(TestCase):
                                              'Year': ['2021'],
                                              'Major': ['Systems Engineering'],
                                              'NumClass': ['2'],
+                                             'phone': ['6451827384'],
                                              'generate-schedule': ['']})
         request.user = self.user
         actual = len(submit_profile(request).content)
@@ -225,10 +229,11 @@ class SubmitProfileTest(TestCase):
                                              'Year': ['2021'],
                                              'Major': ['Systems Engineering'],
                                              'NumClass': ['2'],
+                                             'phone': ['6451827384'],
                                              'save-profile': ['']})
         request.user = self.user
         # Create a Student Object so that it is an existing user
-        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5)
+        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5, phone=8172229876)
         student.save()
 
         actual = len(submit_profile(request).content)
@@ -246,10 +251,11 @@ class SubmitProfileTest(TestCase):
                                              'Year': ['2021'],
                                              'Major': ['Systems Engineering'],
                                              'NumClass': ['2'],
+                                             'phone': ['6451827384'],
                                              'generate-schedule': ['']}) # Indicates edit schedule was pressed
         request.user = self.user
         # Create a Student Object so that it is an existing user
-        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5)
+        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5, phone=8172229876)
         student.save()
 
         actual = len(submit_profile(request).content)
@@ -263,15 +269,15 @@ class SubmitProfileTest(TestCase):
     # Test error message when name field is blank when editing existing student profile
     def test_submit_profile_edit_no_name(self):
         request = self.request_factory.post(reverse('submit'),
-                                            {'Name': [''], # No name field
+                                            {'Name': [''],
                                              'Year': ['2021'],
                                              'Major': ['Systems Engineering'],
                                              'NumClass': ['2'],
-                                             'generate-schedule': ['']})
+                                             'phone': ['6451827384'],
+                                             'save-profile': ['']})
         request.user = self.user
-
         # Create a Student Object so that it is an existing user
-        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5)
+        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5, phone=8172229876)
         student.save()
 
         actual = len(submit_profile(request).content)
@@ -296,7 +302,7 @@ class MakeTest(TestCase):
         username='bni3y', email='bni3y@virginia.edu', password='djflksdjldskfjlfdsk') # Create a simulated user
 
         # Create a Student Object that connects to that user
-        student = Student(user = self.user, name = "Borja", year = 1, major = "Computer Science", num = 5)
+        student = Student(user = self.user, name = "Borja", year = 1, major = "Computer Science", num = 5, phone=1231221234)
 
         # Save the Student Object we have just created
         student.save()

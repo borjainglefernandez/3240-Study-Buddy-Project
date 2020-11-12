@@ -106,6 +106,12 @@ def submit_profile(request):
         'get_majors': majors,
     })
 
+    # Error for if user name is null and the user is editing their profile
+    phone_error_edit = render(request, 'studentprofile.html', {  # Redirects the user to the profile page again
+        'error_message': "Phone numbers must be 10-digits with no special characters",  # Description for the error message displayed
+        'get_majors': majors,
+    })
+
     if request.method=='POST':
         first_time = False
         print(request.POST)
@@ -116,14 +122,22 @@ def submit_profile(request):
             if request.POST["Name"].strip() == "":
                 return null_name_error_edit # if user is editing their profile and there is no name
                                             # raise the error
-
+            number = request.POST["phone"]
+            hyphen = '-' in number
+            openP = '(' in number
+            closeP = ')' in number
+            defaultNum = number == 5551234567 or number == 0
+            numLength = len(str(number)) != 10
+            
+            if hyphen or openP or closeP or defaultNum or numLength:
+                return phone_error_edit
         except:
             if request.POST["Name"].strip() == "":
                 return null_name_error_create # if user is creating their profile for first time and there is no name
                                               # raise the error
             # Create a Student Object that connects to that user
             student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'],
-                        major = request.POST['Major'], num = request.POST['NumClass'])
+                        major = request.POST['Major'], num = request.POST['NumClass'], phone = request.POST['phone'])
             first_time = True
             # Save the Student Object we have just created
             student.save()
@@ -151,6 +165,7 @@ def submit_profile(request):
             student.year = request.POST['Year']
             student.major = request.POST['Major']
             student.num = request.POST['NumClass']
+            student.phone = request.POST['phone']
             student.edit = False
             student.save()
 

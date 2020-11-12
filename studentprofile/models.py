@@ -66,7 +66,7 @@ class Student(models.Model):
     # Sorts it in ascending order
     def get_classes_in_str_order(self):
         result = []
-        classes = self.schedule.get_classes() # Get all of the students' classes
+        classes = self.schedule.get_classes() # Get all of the students' classes in the schedule
 
         minstr = 9
         minclass = None
@@ -83,7 +83,7 @@ class Student(models.Model):
         return result
 
     def get_suggested_groups(self):
-        from studygroups.models import StudyGroup # Doesn't work when I import it at the top
+        from studygroups.models import StudyGroup # Doesn't work when I import it at the top (circular import)
         suggested_groups = []
         relevant_groups = []
         classes_sorted_by_str = self.get_classes_in_str_order() # Obtain students' classes in sorted order
@@ -106,12 +106,49 @@ class Student(models.Model):
             for group in relevant_groups:
                 if str(clas) == str(group.course):
                     suggested_groups.append(group)
-
+                    
         # If we have more than 3 suggested groups, trim the list to only 3
         if len(suggested_groups) > 3:
             suggested_groups = suggested_groups[:3]
 
         return suggested_groups
+    
+    
+    def get_available_groups(self):
+        from studygroups.models import StudyGroup 
+        available_groups = []
+        relevant_groups = []
+        suggested_groups = self.get_suggested_groups() # checks for repeated groups 
+        classes_sorted_by_str = self.get_classes_in_str_order() # Obtain students' classes in sorted order
+
+        # Get all groups with a course that the student has in their schedule
+        for group in StudyGroup.objects.all():
+            # 1.) Check if the groups' course matches a course in a students' schedule
+            # 2.) Check if the group is full or not
+            if (str(group.course) in str(classes_sorted_by_str)) \
+                    and not(len(group.get_members()) == group.maxSize):
+                relevant_groups.append(group)
+            
+            # Adds the group to available group if the user is in it,
+            # even though the course does not match user's schedule
+            elif self in group.get_members(): 
+                available_groups.append(group)
+
+        # Sort relevant groups in order of suggestedness
+        #
+        # Iterate in order of strength of classes and see if a relevant class is found
+        for clas in classes_sorted_by_str:
+            for group in relevant_groups:
+                if str(clas) == str(group.course):
+                    available_groups.append(group)
+        
+        # Do not show the same groups from the suggested group again in the available group
+        for suggest in suggested_groups:
+            for group in available_groups:
+                if str(group) == str(suggest):
+                    available_groups.remove(group)
+
+        return available_groups
 
 
 

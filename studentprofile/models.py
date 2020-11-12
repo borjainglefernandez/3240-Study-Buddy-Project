@@ -65,6 +65,9 @@ class Student(models.Model):
     #
     # Sorts it in ascending order
     def get_classes_in_str_order(self):
+        if self.schedule is None:
+            return []
+
         result = []
         classes = self.schedule.get_classes() # Get all of the students' classes in the schedule
 

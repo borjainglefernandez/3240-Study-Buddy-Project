@@ -4,6 +4,7 @@ from studentprofile.models import Student
 from login.models import Course
 
 GROUPME_TOKEN = "0vlhRZGIYVOYuz7DJfBwTRdStaxXBIoEc7usZSJW"
+from groupy.client import Client
 # Create your models here.
 class ZoomInfo(models.Model):
     code = models.CharField(max_length=15, null=True)
@@ -49,3 +50,21 @@ class StudyGroup(models.Model):
     
     def __str__(self):
         return self.name + ": " + str([str(m) for m in self.members.all()])
+
+    # https://stackoverflow.com/questions/1471909/django-model-delete-not-triggered
+    def delete(self, *args, **kwargs):
+        # Note this is a simple example. it only handles delete(),
+        # and not replacing images in .save()
+        super(StudyGroup, self).delete(*args, **kwargs)
+        if (self.zoom != None):
+            if (self.zoom.group_id != None):
+                # Generate client that does the work
+                client = Client.from_token(GROUPME_TOKEN)
+
+                # Get group
+                try:
+                    group = client.groups.get(self.zoom.group_id)
+                except:
+                    print("Failed to find group")
+                    return
+                group.destroy()

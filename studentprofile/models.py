@@ -53,6 +53,8 @@ class Student(models.Model):
 
     schedule = models.OneToOneField(Schedule, on_delete=models.SET_NULL, null=True)
 
+    groupme_id = models.CharField(max_length=15, default = "None")
+
     edit = models.BooleanField(default=False)
 
     def __str__(self):
@@ -69,7 +71,12 @@ class Student(models.Model):
             return []
 
         result = []
+
+        if self.schedule is None:
+            return []
+
         classes = self.schedule.get_classes() # Get all of the students' classes in the schedule
+
 
         minstr = 9
         minclass = None

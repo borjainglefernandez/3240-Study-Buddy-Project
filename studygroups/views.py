@@ -5,9 +5,74 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from studentprofile.models import Schedule, Course, Class, Student
-from .models import StudyGroup, ZoomInfo
+from .models import StudyGroup, ZoomInfo, GROUPME_TOKEN
 from django.contrib import messages
 from django.contrib.auth.models import User
+from groupy.client import Client
+from groupy.api.memberships import Memberships
+
+#def groupMeGenerateGroup(studyGroup: StudyGroup):
+def groupMeGenerateGroup(studyGroup):
+    # Generate client that does the work
+    client = Client.from_token(GROUPME_TOKEN)
+    # Create the group itself
+    new_group = client.groups.create(name=studyGroup.name)
+
+    studyGroup.zoom.group_id = new_group.group_id
+    studyGroup.zoom.save()
+    studyGroup.save()
+
+def groupMeJoinGroup(studyGroup, student: Student):
+    # Generate client that does the work
+    client = Client.from_token(GROUPME_TOKEN)
+
+    # Extra work to make joining a group possible via phone number
+    group = client.groups.get(studyGroup.zoom.group_id)
+    # group = None
+    # for g in client.groups.list_all():
+    #     if str(g.name) == studyGroup.name:
+    #         group = g
+
+    # Fancy out-of-library technique to do what I want - add via phone number
+    mship = group.get_membership()
+    memberships = Memberships(mship.manager.session, group_id=group.group_id)
+    member = {
+        'nickname': str(student.name),
+        'phone_number': str(student.phone)
+    }
+    memberships.add_multiple(member)
+    # Save their user id for later
+    mem = None
+    for m in group.members:
+        if str(m.nickname) == str(student.name):
+            mem = m
+    studyGroup.zoom.save()
+    studyGroup.save()
+    try:
+        student.groupme_id = str(mem.user_id)
+
+    except:
+        pass
+
+
+def groupMeLeaveGroup(studyGroup: StudyGroup, student: Student):
+    # Generate client that does the work
+    client = Client.from_token(GROUPME_TOKEN)
+
+    # Extra work to make joining a group possible via phone number
+    group = client.groups.get(studyGroup.zoom.group_id)
+
+    # Assumes their user_id is known
+    mem = None
+    for m in group.members:
+        if str(m.user_id) == str(student.user_id):
+            mem = m
+    try:
+        mem.remove()
+    except:
+        pass
+
+
 
 # Create your views here.
 def makeGroup(request):
@@ -106,6 +171,9 @@ def makeGroup(request):
     studyGroup.save()
     studyGroup.members.add(student)
     studyGroup.save()
+    groupMeGenerateGroup(studyGroup)
+    studyGroup.save()
+    groupMeJoinGroup(studyGroup, student)
     
     # After a group is created, redirect the users to the group page
     context = {
@@ -120,19 +188,24 @@ def joinGroup(request):
     except:
         return HttpResponseRedirect(reverse('home'))
 
-
     # Obtain the study group based on the id
     studyGroup = StudyGroup.objects.get(pk = int(request.POST['Group']))
     studyGroup.save()
 
-    # If user is already in group or group is full return home
-    if str(student) in str(studyGroup.get_members()) or studyGroup.maxSize == len(studyGroup.get_members()):
+    if studyGroup.maxSize == len(studyGroup.get_members()):
         return HttpResponseRedirect(reverse('home'))
 
     # Add student to group
     studyGroup.members.add(student)
     studyGroup.save()
 
+
+    if studyGroup.zoom.group_id != "None": # Assumed situation
+        groupMeJoinGroup(studyGroup, student)
+    else: # Panic situation
+        groupMeGenerateGroup(studyGroup)
+        for s in studyGroup.members.all():
+            groupMeJoinGroup(studyGroup, s)
 
     return HttpResponseRedirect(reverse('home'))
 
@@ -147,17 +220,16 @@ def leaveGroup(request):
     studyGroup = StudyGroup.objects.get(pk = int(request.POST['Group']))
     studyGroup.save()
 
-    # If user is not in group return home
-    if str(student) not in str(studyGroup.get_members()):
-        return HttpResponseRedirect(reverse('home'))
-
     # Remove student from group
     studyGroup.members.remove(student)
     studyGroup.save()
 
-    # If group empty, delete it
-    if studyGroup.get_members() == []:
+    groupMeLeaveGroup(studyGroup, student)
+
+    if str(studyGroup.get_members_string()) == "":
+        studyGroup = StudyGroup.objects.get(pk=int(request.POST['Group']))
         studyGroup.delete()
+        studyGroup.zoom.delete()
 
     return HttpResponseRedirect(reverse('home'))
 
@@ -170,6 +242,7 @@ def studygroup_detail(request, StudyGroup_name):
     except StudyGroup.DoesNotExist or Student.DoesNotExist:
         return HttpResponseRedirect(reverse('home'))
     
+    print(StudyGroup_name)
     context = {
         "StudyGroup":studygroup,
         "Student":student

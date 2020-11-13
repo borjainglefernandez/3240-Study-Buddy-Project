@@ -10,7 +10,7 @@ class ZoomInfo(models.Model):
     url = models.CharField(max_length=100, null=True)
     group_id = models.CharField(max_length=15, null=True)
     def __str__(self):
-        return str(self.code) + " " + str(self.url) + " " + str(self.group_id)
+        return str(self.code) + " " + str(self.url) + " " + "Group Me ID: " + str(self.group_id)
 
 class StudyGroup(models.Model):
     name = models.CharField(max_length=100)

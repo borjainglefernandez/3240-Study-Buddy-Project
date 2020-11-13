@@ -11,17 +11,20 @@ from django.contrib.auth.models import User
 from groupy.client import Client
 from groupy.api.memberships import Memberships
 
-def groupMeGenerateGroup(studyGroup: StudyGroup):
+#def groupMeGenerateGroup(studyGroup: StudyGroup):
+def groupMeGenerateGroup(studyGroup):
     # Generate client that does the work
     client = Client.from_token(GROUPME_TOKEN)
     # Create the group itself
     new_group = client.groups.create(name=studyGroup.name)
-    #print(new_group)
-    #print(type(new_group))
-    studyGroup.zoom.group_id = new_group.group_id
-    studyGroup.save()
 
-def groupMeJoinGroup(studyGroup: StudyGroup, student: Student):
+    studyGroup.zoom.group_id = new_group.group_id
+    studyGroup.zoom.save()
+    studyGroup.save()
+    print(studyGroup.zoom.group_id)
+    print("Works")
+
+def groupMeJoinGroup(studyGroup, student: Student):
     # Generate client that does the work
     client = Client.from_token(GROUPME_TOKEN)
 
@@ -40,13 +43,19 @@ def groupMeJoinGroup(studyGroup: StudyGroup, student: Student):
         'phone_number': str(student.phone)
     }
     memberships.add_multiple(member)
-
     # Save their user id for later
     mem = None
+    print(group.members)
     for m in group.members:
         if str(m.nickname) == str(student.name):
             mem = m
-    student.groupme_id = str(mem.user_id)
+    studyGroup.zoom.save()
+    studyGroup.save()
+    try:
+        student.groupme_id = str(mem.user_id)
+
+    except:
+        pass
 
 
 def groupMeLeaveGroup(studyGroup: StudyGroup, student: Student):
@@ -61,7 +70,10 @@ def groupMeLeaveGroup(studyGroup: StudyGroup, student: Student):
     for m in group.members:
         if str(m.user_id) == str(student.user_id):
             mem = m
-    mem.remove()
+    try:
+        mem.remove()
+    except:
+        pass
 
 
 
@@ -163,6 +175,7 @@ def makeGroup(request):
     studyGroup.members.add(student)
     studyGroup.save()
     groupMeGenerateGroup(studyGroup)
+    studyGroup.save()
     groupMeJoinGroup(studyGroup, student)
     
     # After a group is created, redirect the users to the group page
@@ -212,6 +225,12 @@ def leaveGroup(request):
     studyGroup.save()
 
     groupMeLeaveGroup(studyGroup, student)
+
+    if str(studyGroup.get_members_string()) == "":
+        print("Here")
+        studyGroup = StudyGroup.objects.get(pk=int(request.POST['Group']))
+        studyGroup.delete()
+        studyGroup.zoom.delete()
 
     return HttpResponseRedirect(reverse('home'))
 

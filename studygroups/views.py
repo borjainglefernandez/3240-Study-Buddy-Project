@@ -26,8 +26,12 @@ def groupMeJoinGroup(studyGroup, student: Student):
     # Generate client that does the work
     client = Client.from_token(GROUPME_TOKEN)
 
-    # Extra work to make joining a group possible via phone number
-    group = client.groups.get(studyGroup.zoom.group_id)
+    # Get group object
+    try:
+        group = client.groups.get(studyGroup.zoom.group_id)
+    except:
+        print("Failed to find group")
+        return
     # group = None
     # for g in client.groups.list_all():
     #     if str(g.name) == studyGroup.name:
@@ -59,8 +63,12 @@ def groupMeLeaveGroup(studyGroup: StudyGroup, student: Student):
     # Generate client that does the work
     client = Client.from_token(GROUPME_TOKEN)
 
-    # Extra work to make joining a group possible via phone number
-    group = client.groups.get(studyGroup.zoom.group_id)
+    # Get group object
+    try:
+        group = client.groups.get(studyGroup.zoom.group_id)
+    except:
+        print("Failed to find group")
+        return
 
     # Assumes their user_id is known
     mem = None
@@ -224,7 +232,12 @@ def leaveGroup(request):
     studyGroup.members.remove(student)
     studyGroup.save()
 
-    groupMeLeaveGroup(studyGroup, student)
+    if studyGroup.zoom.group_id != "None": # Assumed situation
+        groupMeLeaveGroup(studyGroup, student)
+    else: # Panic situation
+        groupMeGenerateGroup(studyGroup)
+        for s in studyGroup.members.all():
+            groupMeJoinGroup(studyGroup, s)
 
     if str(studyGroup.get_members_string()) == "":
         studyGroup = StudyGroup.objects.get(pk=int(request.POST['Group']))

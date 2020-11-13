@@ -25,15 +25,44 @@ def groupMeJoinGroup(studyGroup: StudyGroup, student: Student):
     # Generate client that does the work
     client = Client.from_token(GROUPME_TOKEN)
 
+    # Extra work to make joining a group possible via phone number
+    group = client.groups.get(studyGroup.zoom.group_id)
+    # group = None
+    # for g in client.groups.list_all():
+    #     if str(g.name) == studyGroup.name:
+    #         group = g
+
+    # Fancy out-of-library technique to do what I want - add via phone number
+    mship = group.get_membership()
+    memberships = Memberships(mship.manager.session, group_id=group.group_id)
+    member = {
+        'nickname': str(student.name),
+        'phone_number': str(student.phone)
+    }
+    memberships.add_multiple(member)
+
+    # Save their user id for later
+    mem = None
+    for m in group.members:
+        if str(m.nickname) == str(student.name):
+            mem = m
+    student.groupme_id = str(mem.user_id)
+
+
+def groupMeLeaveGroup(studyGroup: StudyGroup, student: Student):
+    # Generate client that does the work
+    client = Client.from_token(GROUPME_TOKEN)
 
     # Extra work to make joining a group possible via phone number
     group = client.groups.get(studyGroup.zoom.group_id)
-    membership = group.get_membership()
-    memberships = Memberships(membership.manager.session, group_id=studyGroup.zoom.group_id)
-    memberships.add_multiple({
-        'nickname': student.name,
-        'phone_number': student.phone
-    })
+
+    # Assumes their user_id is known
+    mem = None
+    for m in group.members:
+        if str(m.user_id) == str(student.user_id):
+            mem = m
+    mem.remove()
+
 
 
 # Create your views here.
@@ -134,6 +163,7 @@ def makeGroup(request):
     studyGroup.members.add(student)
     studyGroup.save()
     groupMeGenerateGroup(studyGroup)
+    groupMeJoinGroup(studyGroup, student)
     
     # After a group is created, redirect the users to the group page
     context = {
@@ -157,7 +187,7 @@ def joinGroup(request):
     studyGroup.save()
 
 
-    if studyGroup.zoom.group_id != None: # Assumed situation
+    if studyGroup.zoom.group_id != "None": # Assumed situation
         groupMeJoinGroup(studyGroup, student)
     else: # Panic situation
         groupMeGenerateGroup(studyGroup)
@@ -181,6 +211,7 @@ def leaveGroup(request):
     studyGroup.members.remove(student)
     studyGroup.save()
 
+    groupMeLeaveGroup(studyGroup, student)
 
     return HttpResponseRedirect(reverse('home'))
 

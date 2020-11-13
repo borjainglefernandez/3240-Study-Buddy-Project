@@ -54,7 +54,7 @@ def groupMeJoinGroup(studyGroup, student: Student):
     studyGroup.save()
     try:
         student.groupme_id = str(mem.user_id)
-
+        student.save()
     except:
         pass
 

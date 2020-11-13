@@ -11,7 +11,7 @@ class ZoomInfo(models.Model):
     url = models.CharField(max_length=100, null=True)
     group_id = models.CharField(max_length=15, null=True)
     def __str__(self):
-        return str(self.code) + " " + str(self.url) + " " + str(self.group_id)
+        return str(self.code) + " " + str(self.url) + " " + "Group Me ID: " + str(self.group_id)
 
 class StudyGroup(models.Model):
     name = models.CharField(max_length=100)
@@ -55,15 +55,21 @@ class StudyGroup(models.Model):
     def delete(self, *args, **kwargs):
         # Note this is a simple example. it only handles delete(),
         # and not replacing images in .save()
-        super(StudyGroup, self).delete(*args, **kwargs)
+
+        group_id = None
         if (self.zoom != None):
             if (self.zoom.group_id != None):
+                group_id = self.zoom.group_id
+
+        super(StudyGroup, self).delete(*args, **kwargs)
+
+        if (group_id != None):
                 # Generate client that does the work
                 client = Client.from_token(GROUPME_TOKEN)
 
                 # Get group
                 try:
-                    group = client.groups.get(self.zoom.group_id)
+                    group = client.groups.get(group_id)
                 except:
                     print("Failed to find group")
                     return

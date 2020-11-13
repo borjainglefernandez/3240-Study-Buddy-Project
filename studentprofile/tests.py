@@ -2,6 +2,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Student, Schedule, Course, Class
+from studygroups.models import StudyGroup, ZoomInfo
+from studygroups.views import joinGroup, leaveGroup
 import courseInitializer
 from .views import make
 from mysite.views import submit_profile
@@ -105,8 +107,6 @@ class StudentModelCreationTests(TestCase):
         s3 = Student(name="s1")
         self.assertEqual(s3.name,"s1")
 
-    
-
     #Equivalence test
     def test_profile_saved_with_year(self):
         s4 = Student(name="s2Name",year=2,major="Math")
@@ -119,6 +119,160 @@ class StudentModelCreationTests(TestCase):
     def test_profile_saved_with_name(self):
         s6 = Student(name="s2Name",year=2,major ="Math")
         self.assertEqual(s6.name,"s2Name")
+
+class StudentModelFunctionTests(TestCase):
+    def setUp(self):
+        courseInitializer.initializeCourses() # initialize the courses to add to the schedule
+        self.request_factory = RequestFactory() # This creates a request factor object which is needed when
+                                                # simulating requests
+
+        self.user = User.objects.create_user(
+        username='bni3y', email='bni3y@virginia.edu', password='djflksdjldskfjlfdsk') # Create a simulated user
+
+        self.user1 = User.objects.create_user(
+            username='JIM', email='jimbob@virginia.edu', password='jim')  # Create a simulated user
+
+        # Create a Student Object that connects to that user
+        self.student = Student(user = self.user, name = "Borja", year = 1, major = "Computer Science", num = 5, phone=1231221234)
+        self.student1 = Student(user = self.user, name = "Jim")
+
+        # Save the Student Object we have just created
+        self.student.save()
+
+        self.schedule = Schedule.objects.create()
+        self.list_of_classes_in_sorted_order = []
+
+        cs2150 = Class(course=Course.objects.get(mnemonic="CS", number=2150), schedule=self.schedule, strength=1)
+        cs2150.save()
+        self.list_of_classes_in_sorted_order.append(cs2150)
+
+        cs3330 = Class(course=Course.objects.get(mnemonic="CS", number=3330), schedule=self.schedule, strength=1)
+        cs3330.save()
+        self.list_of_classes_in_sorted_order.append(cs3330)
+
+        math1220 = Class(course=Course.objects.get(mnemonic="MATH", number=1220), schedule=self.schedule, strength=2)
+        math1220.save()
+        self.list_of_classes_in_sorted_order.append(math1220)
+
+        comm2020 = Class(course=Course.objects.get(mnemonic="COMM", number=2020), schedule=self.schedule, strength=3)
+        comm2020.save()
+        self.list_of_classes_in_sorted_order.append(comm2020)
+
+        econ2010 = Class(course=Course.objects.get(mnemonic="ECON", number=2010), schedule=self.schedule, strength=4)
+        econ2010.save()
+        self.list_of_classes_in_sorted_order.append(econ2010)
+        self.schedule.save()
+
+    def test_get_email(self):
+        expected = "bni3y@virginia.edu"
+        actual = self.student.get_email()
+        self.assertEqual(expected, actual)
+
+    def test_get_classes_in_str_order_not_empty(self):
+        self.student.schedule = self.schedule
+
+        expected = self.list_of_classes_in_sorted_order
+        actual = self.student.get_classes_in_str_order()
+
+        self.assertEqual(expected, actual)
+
+    def test_get_classes_in_str_order_empty(self):
+        expected = []
+        actual = self.student.get_classes_in_str_order()
+
+        self.assertEqual(expected, actual)
+
+    def test_get_suggested_groups_none(self):
+        expected = []
+        actual = self.student.get_suggested_groups()
+
+        self.assertEqual(expected, actual)
+
+    def test_get_suggested_groups_none(self):
+        expected = []
+        actual = self.student.get_suggested_groups()
+
+        self.assertEqual(expected, actual)
+
+    def test_get_suggested_groups_some(self):
+        self.student.schedule = self.schedule
+
+        study_group1 = StudyGroup(name="banana", maxSize=2, course = Course.objects.get(mnemonic="CS", number=2150))
+        study_group1.save()
+
+        study_group2 = StudyGroup(name="apple", maxSize=3, course=Course.objects.get(mnemonic="ECON", number=2010))
+        study_group2.save()
+
+        expected = [study_group1, study_group2]
+        actual = self.student.get_suggested_groups()
+
+        self.assertEqual(expected, actual)
+
+    def test_get_suggested_groups_right_order(self):
+        self.student.schedule = self.schedule
+
+        study_group1 = StudyGroup(name="banana", maxSize=2, course = Course.objects.get(mnemonic="CS", number=2150))
+        study_group1.save()
+
+        study_group2 = StudyGroup(name="apple", maxSize=3, course=Course.objects.get(mnemonic="CS", number=3330))
+        study_group2.save()
+
+        study_group3 = StudyGroup(name="berry", maxSize=2, course=Course.objects.get(mnemonic="MATH", number=1220))
+        study_group3.save()
+
+        study_group4 = StudyGroup(name="peach", maxSize=5, course=Course.objects.get(mnemonic="COMM", number=2020))
+        study_group4.save()
+
+        study_group5 = StudyGroup(name="kiwi", maxSize=6, course=Course.objects.get(mnemonic="ECON", number=2010))
+        study_group5.save()
+
+        expected = [study_group1, study_group2, study_group3]
+        actual = self.student.get_suggested_groups()
+
+        self.assertEqual(expected, actual)
+
+    def test_get_available_groups_none(self):
+        expected = []
+        actual = self.student.get_available_groups()
+
+        self.assertEqual(expected, actual)
+
+    def test_get_available_groups_with_some_same_course(self):
+        self.student.schedule = self.schedule
+
+        study_group1 = StudyGroup(name="banana", maxSize=2, course = Course.objects.get(mnemonic="CS", number=2150))
+        study_group1.save()
+
+        study_group2 = StudyGroup(name="apple", maxSize=3, course=Course.objects.get(mnemonic="CS", number=3330))
+        study_group2.save()
+
+        study_group3 = StudyGroup(name="berry", maxSize=2, course=Course.objects.get(mnemonic="MATH", number=1220))
+        study_group3.save()
+
+        study_group4 = StudyGroup(name="peach", maxSize=5, course=Course.objects.get(mnemonic="COMM", number=2020))
+        study_group4.save()
+
+        study_group5 = StudyGroup(name="kiwi", maxSize=6, course=Course.objects.get(mnemonic="ECON", number=2010))
+        study_group5.save()
+
+        expected = [study_group4, study_group5]
+        actual = self.student.get_available_groups()
+
+        self.assertEqual(expected, actual)
+
+    def test_get_available_groups_with_none_in_same_course(self):
+        self.student.schedule = self.schedule
+
+        study_group1 = StudyGroup(name="banana", maxSize=2, course = Course.objects.get(mnemonic="CS", number=2102))
+        study_group1.save()
+
+        study_group2 = StudyGroup(name="apple", maxSize=3, course=Course.objects.get(mnemonic="CS", number=4102))
+        study_group2.save()
+
+        expected = []
+        actual = self.student.get_available_groups()
+
+        self.assertEqual(expected, actual)
 
 class ScheduleModelCreationTests(TestCase):
     # This is run before every test in this class
@@ -514,7 +668,7 @@ class MakeTest(TestCase):
     def test_null_schedule(self):
         request = self.request_factory.post(reverse('studentprofile:generateSchedule'),
         {'class1': [''], 'strength1': [''],
-         'class2': [''], 'strength2': [''], 
+         'class2': [''], 'strength2': [''],
          'class3': [''], 'strength3': [''],
          'class4': [''], 'strength4': [''],
          'class5': [''], 'strength5': ['']}) #no class entered
@@ -529,4 +683,374 @@ class MakeTest(TestCase):
         }).content)
 
         self.assertEqual(expected, actual)
+
+class StudyGroupModelFunctionTest(TestCase):
+    def setUp(self):
+        self.request_factory = RequestFactory() # This creates a request factor object which is needed when
+                                                # simulating requests
+
+        self.user = User.objects.create_user(
+        username='bni3y', email='bni3y@virginia.edu', password='djflksdjldskfjlfdsk') # Create a simulated user
+
+        # Create a Student Object that connects to that user
+        self.student = Student(user = self.user, name = "Borja", year = 1, major = "Computer Science", num = 5, phone=1231221234)
+
+        # Different Users and Students
+        self.user1 = User.objects.create_user(
+        username='jim1', email='jim@virginia.edu', password='ffff') # Create a simulated user
+        self.student1 = Student(user = self.user1, name = "Jim", year = 3, major = "Computer Science", num = 5, phone=1231221234)
+
+        self.user2 = User.objects.create_user(
+            username='jim2', email='jim2@virginia.edu', password='dddd')  # Create a simulated user
+        self.student2 = Student(user=self.user2, name="Jim2", year=2, major="Computer Science", num=5, phone=1231221234)
+
+        # Save the Student Object we have just created
+        self.student.save()
+        self.student1.save()
+        self.student2.save()
+
+    def test_get_members_empty(self):
+        # Make a study group
+        study_group = StudyGroup(name = "banana",maxSize = 4,)
+        study_group.save()
+
+        actual = study_group.get_members()
+        expected = []
+
+        self.assertEqual(expected, actual)
+
+    def test_get_members_not_empty(self):
+        # Make a study group
+        study_group = StudyGroup(name = "banana",maxSize = 4,)
+        study_group.save()
+
+        # Add Student to group
+        study_group.members.add(self.student)
+        study_group.save()
+
+        actual = study_group.get_members()
+        expected = [self.student]
+
+        self.assertEqual(expected, actual)
+
+    def test_get_members_email_empty(self):
+        # Make a study group
+
+        study_group = StudyGroup(name = "banana",maxSize = 4,)
+        study_group.save()
+
+        actual = study_group.get_members_email()
+        expected = ''
+
+        self.assertEqual(expected, actual)
+
+    def test_get_members_email_not_empty(self):
+        # Make a study group
+        study_group = StudyGroup(name = "banana",maxSize = 4,)
+        study_group.save()
+
+        # Add Students to group
+        study_group.members.add(self.student1)
+        study_group.save()
+        study_group.members.add(self.student2)
+        study_group.save()
+
+        actual = study_group.get_members_email()
+        expected = 'Jim (jim@virginia.edu), Jim2 (jim2@virginia.edu)'
+
+        self.assertEqual(expected, actual)
+
+    def test_get_members_string_empty(self):
+        # Make a study group
+        study_group = StudyGroup(name = "banana",maxSize = 4,)
+        study_group.save()
+
+        actual = study_group.get_members_string()
+        expected = ''
+
+        self.assertEqual(expected, actual)
+
+    def test_get_members_string_not_empty(self):
+        # Make a study group
+        study_group = StudyGroup(name = "banana",maxSize = 4,)
+        study_group.save()
+
+        # Add Students to group
+        study_group.members.add(self.student1)
+        study_group.save()
+        study_group.members.add(self.student2)
+        study_group.save()
+
+        actual = study_group.get_members_string()
+        expected = 'Jim, Jim2'
+
+        self.assertEqual(expected, actual)
+
+class JoinGroupTest(TestCase):
+
+    def setUp(self):
+        self.request_factory = RequestFactory() # This creates a request factor object which is needed when
+                                                # simulating requests
+
+        self.user = User.objects.create_user(
+        username='bni3y', email='bni3y@virginia.edu', password='djflksdjldskfjlfdsk') # Create a simulated user
+
+        # Create a Student Object that connects to that user
+        self.student = Student(user = self.user, name = "Borja", year = 1, major = "Computer Science", num = 5, phone=1231221234)
+
+        # Different Users and Students
+        self.user1 = User.objects.create_user(
+        username='jim1', email='jim@virginia.edu', password='ffff') # Create a simulated user
+        self.student1 = Student(user = self.user1, name = "Jim", year = 3, major = "Computer Science", num = 5, phone=1231221234)
+
+        self.user2 = User.objects.create_user(
+            username='jim2', email='jim2@virginia.edu', password='dddd')  # Create a simulated user
+        self.student2 = Student(user=self.user2, name="Jim2", year=2, major="Computer Science", num=5, phone=1231221234)
+
+        # Save the Student Object we have just created
+        self.student.save()
+        self.student1.save()
+        self.student2.save()
+
+
+    def test_student_already_in_group(self):
+        # Make a study group
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom=zoom)
+        study_group.save()
+
+        # Add Student to group
+        study_group.members.add(self.student)
+        study_group.save()
+
+        # Obtain Group ID to pass as a parameter to the request
+        group = StudyGroup.objects.get(name = "banana")
+        id = group.id
+
+        # Make request and call joinGroup
+        request = self.request_factory.post(reverse('studygroups:joinGroup'), {
+                      'Group': [str(id)], 'edit': ['']})
+        request.user = self.user
+        joinGroup(request)
+
+        actual = study_group.get_members()
+        expected = [self.student]
+
+        self.assertEqual(expected, actual)
+
+    def test_student_not_in_group(self):
+        # Make a study group
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom=zoom)
+        study_group.save()
+
+        # Obtain Group ID to pass as a parameter to the request
+        group = StudyGroup.objects.get(name="banana")
+        id = group.id
+
+        # Make request and call joinGroup
+        request = self.request_factory.post(reverse('studygroups:joinGroup'), {
+                      'Group': [str(id)], 'edit': ['']})
+        request.user = self.user
+        joinGroup(request)
+
+        actual = study_group.get_members()
+        expected = [self.student]
+
+        self.assertEqual(expected, actual)
+
+    def test_join_full_group(self):
+        # Make a study group
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=2, zoom=zoom)
+        study_group.save()
+
+        # Add Students to group
+        study_group.members.add(self.student1)
+        study_group.save()
+        study_group.members.add(self.student2)
+        study_group.save()
+
+        # Obtain Group ID to pass as a parameter to the request
+        group = StudyGroup.objects.get(name="banana")
+        id = group.id
+
+        # Make request and call joinGroup
+        request = self.request_factory.post(reverse('studygroups:joinGroup'), {
+                      'Group': [str(id)], 'edit': ['']})
+        request.user = self.user
+        joinGroup(request)
+
+        actual = study_group.get_members()
+        expected = [self.student1, self.student2]
+
+        self.assertEqual(expected, actual)
+
+    def test_join_group_does_not_exist(self):
+        # Make a study group
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=2, zoom=zoom)
+        study_group.save()
+
+        # Add Students to group
+        study_group.members.add(self.student1)
+        study_group.save()
+        study_group.members.add(self.student2)
+        study_group.save()
+
+        # Obtain Group ID to pass as a parameter to the request
+        group = StudyGroup.objects.get(name="banana")
+        id = group.id
+
+        # Delete the group
+        group.delete()
+
+        # Make request and call joinGroup
+        request = self.request_factory.post(reverse('studygroups:joinGroup'), {
+                      'Group': [str(id)], 'edit': ['']})
+        request.user = self.user
+
+        # This should fail and thus yield a StudyGroup.DoesNotExist Exception
+        self.assertRaises(StudyGroup.DoesNotExist, joinGroup, request = request)
+
+class LeaveGroupTest(TestCase):
+
+    def setUp(self):
+        self.request_factory = RequestFactory() # This creates a request factor object which is needed when
+                                                # simulating requests
+
+        self.user = User.objects.create_user(
+        username='bni3y', email='bni3y@virginia.edu', password='djflksdjldskfjlfdsk') # Create a simulated user
+
+        # Create a Student Object that connects to that user
+        self.student = Student(user = self.user, name = "Borja", year = 1, major = "Computer Science", num = 5, phone=1231221234)
+
+        # Different Users and Students
+        self.user1 = User.objects.create_user(
+        username='jim1', email='jim@virginia.edu', password='ffff') # Create a simulated user
+        self.student1 = Student(user = self.user1, name = "Jim", year = 3, major = "Computer Science", num = 5, phone=1231221234)
+
+        self.user2 = User.objects.create_user(
+            username='jim2', email='jim2@virginia.edu', password='dddd')  # Create a simulated user
+        self.student2 = Student(user=self.user2, name="Jim2", year=2, major="Computer Science", num=5, phone=1231221234)
+
+        # Save the Student Object we have just created
+        self.student.save()
+        self.student1.save()
+        self.student2.save()
+
+    def test_leave_group_student_no_delete(self):
+        # Make a study group
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom= zoom)
+        study_group.save()
+
+        # Add Student to group
+        study_group.members.add(self.student)
+        study_group.save()
+        study_group.members.add(self.student1)
+        study_group.save()
+
+        # Obtain Group ID to pass as a parameter to the request
+        group = StudyGroup.objects.get(name="banana")
+        id = group.id
+
+        # Make request and call leaveGroup
+        request = self.request_factory.post(reverse('studygroups:leaveGroup'), {
+            'Group': [str(id)], 'edit': ['']})
+        request.user = self.user
+        leaveGroup(request)
+
+        actual = study_group.get_members()
+        expected = [self.student1]
+
+        self.assertEqual(expected, actual)
+
+    def test_leave_group_student_yes_delete(self):
+        # Make a study group
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom= zoom)
+        study_group.save()
+
+        # Add Student to group
+        self.student.group_id = "64042306"
+        study_group.members.add(self.student)
+        study_group.save()
+
+
+        # Obtain Group ID to pass as a parameter to the request
+        group = StudyGroup.objects.get(name="banana")
+        id = group.id
+
+        # Make request and call leaveGroup
+        request = self.request_factory.post(reverse('studygroups:leaveGroup'), {
+            'Group': [str(id)], 'edit': ['']})
+        request.user = self.user
+        leaveGroup(request)
+
+        # Try to access group again
+        self.assertRaises(StudyGroup.DoesNotExist, StudyGroup.objects.get, name = "banana")
+
+    def test_leave_group_student_not_in_group(self):
+        # Make a study group
+        zoom = ZoomInfo(group_id = "64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom = zoom)
+        study_group.save()
+
+        # Add Student to group
+        study_group.members.add(self.student1)
+        study_group.save()
+
+        # Obtain Group ID to pass as a parameter to the request
+        group = StudyGroup.objects.get(name="banana")
+        id = group.id
+
+        # Make request and call leaveGroup
+        request = self.request_factory.post(reverse('studygroups:leaveGroup'), {
+            'Group': [str(id)], 'edit': ['']})
+        request.user = self.user
+        leaveGroup(request)
+
+        actual = study_group.get_members()
+        expected = [self.student1]
+        self.assertEqual(expected, actual)
+
+    def test_leave_group_does_not_exist(self):
+        # Make a study group
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=2, zoom=zoom)
+        study_group.save()
+
+        # Add Students to group
+        study_group.members.add(self.student1)
+        study_group.save()
+        study_group.members.add(self.student2)
+        study_group.save()
+
+        # Obtain Group ID to pass as a parameter to the request
+        group = StudyGroup.objects.get(name="banana")
+        id = group.id
+
+        # Delete the group
+        group.delete()
+
+        # Make request and call leaveGroup
+        request = self.request_factory.post(reverse('studygroups:leaveGroup'), {
+                      'Group': [str(id)], 'edit': ['']})
+        request.user = self.user
+
+        # This should fail and thus yield a StudyGroup.DoesNotExist Exception
+        self.assertRaises(StudyGroup.DoesNotExist, leaveGroup, request = request)
+
+
+
+
 

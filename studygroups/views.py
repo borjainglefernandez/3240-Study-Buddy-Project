@@ -21,8 +21,6 @@ def groupMeGenerateGroup(studyGroup):
     studyGroup.zoom.group_id = new_group.group_id
     studyGroup.zoom.save()
     studyGroup.save()
-    print(studyGroup.zoom.group_id)
-    print("Works")
 
 def groupMeJoinGroup(studyGroup, student: Student):
     # Generate client that does the work
@@ -45,7 +43,6 @@ def groupMeJoinGroup(studyGroup, student: Student):
     memberships.add_multiple(member)
     # Save their user id for later
     mem = None
-    print(group.members)
     for m in group.members:
         if str(m.nickname) == str(student.name):
             mem = m
@@ -195,6 +192,9 @@ def joinGroup(request):
     studyGroup = StudyGroup.objects.get(pk = int(request.POST['Group']))
     studyGroup.save()
 
+    if studyGroup.maxSize == len(studyGroup.get_members()):
+        return HttpResponseRedirect(reverse('home'))
+
     # Add student to group
     studyGroup.members.add(student)
     studyGroup.save()
@@ -227,7 +227,6 @@ def leaveGroup(request):
     groupMeLeaveGroup(studyGroup, student)
 
     if str(studyGroup.get_members_string()) == "":
-        print("Here")
         studyGroup = StudyGroup.objects.get(pk=int(request.POST['Group']))
         studyGroup.delete()
         studyGroup.zoom.delete()

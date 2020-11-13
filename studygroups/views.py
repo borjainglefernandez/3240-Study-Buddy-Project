@@ -120,9 +120,14 @@ def joinGroup(request):
     except:
         return HttpResponseRedirect(reverse('home'))
 
+
     # Obtain the study group based on the id
     studyGroup = StudyGroup.objects.get(pk = int(request.POST['Group']))
     studyGroup.save()
+
+    # If user is already in group or group is full return home
+    if str(student) in str(studyGroup.get_members()) or studyGroup.maxSize == len(studyGroup.get_members()):
+        return HttpResponseRedirect(reverse('home'))
 
     # Add student to group
     studyGroup.members.add(student)
@@ -142,10 +147,17 @@ def leaveGroup(request):
     studyGroup = StudyGroup.objects.get(pk = int(request.POST['Group']))
     studyGroup.save()
 
+    # If user is not in group return home
+    if str(student) not in str(studyGroup.get_members()):
+        return HttpResponseRedirect(reverse('home'))
+
     # Remove student from group
     studyGroup.members.remove(student)
     studyGroup.save()
 
+    # If group empty, delete it
+    if studyGroup.get_members() == []:
+        studyGroup.delete()
 
     return HttpResponseRedirect(reverse('home'))
 
@@ -158,7 +170,6 @@ def studygroup_detail(request, StudyGroup_name):
     except StudyGroup.DoesNotExist or Student.DoesNotExist:
         return HttpResponseRedirect(reverse('home'))
     
-    print(StudyGroup_name)
     context = {
         "StudyGroup":studygroup,
         "Student":student

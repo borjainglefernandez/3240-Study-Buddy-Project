@@ -2,7 +2,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Student, Schedule, Course, Class
-from studygroups.models import StudyGroup
+from studygroups.models import StudyGroup, ZoomInfo
 from studygroups.views import joinGroup, leaveGroup
 import courseInitializer
 from .views import make
@@ -735,6 +735,7 @@ class StudyGroupModelFunctionTest(TestCase):
 
     def test_get_members_email_empty(self):
         # Make a study group
+
         study_group = StudyGroup(name = "banana",maxSize = 4,)
         study_group.save()
 
@@ -814,7 +815,9 @@ class JoinGroupTest(TestCase):
 
     def test_student_already_in_group(self):
         # Make a study group
-        study_group = StudyGroup(name = "banana",maxSize = 4,)
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom=zoom)
         study_group.save()
 
         # Add Student to group
@@ -838,7 +841,9 @@ class JoinGroupTest(TestCase):
 
     def test_student_not_in_group(self):
         # Make a study group
-        study_group = StudyGroup(name="banana", maxSize=4, )
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom=zoom)
         study_group.save()
 
         # Obtain Group ID to pass as a parameter to the request
@@ -858,7 +863,9 @@ class JoinGroupTest(TestCase):
 
     def test_join_full_group(self):
         # Make a study group
-        study_group = StudyGroup(name="banana", maxSize=2, )
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=2, zoom=zoom)
         study_group.save()
 
         # Add Students to group
@@ -884,7 +891,9 @@ class JoinGroupTest(TestCase):
 
     def test_join_group_does_not_exist(self):
         # Make a study group
-        study_group = StudyGroup(name="banana", maxSize=2, )
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=2, zoom=zoom)
         study_group.save()
 
         # Add Students to group
@@ -936,7 +945,9 @@ class LeaveGroupTest(TestCase):
 
     def test_leave_group_student_no_delete(self):
         # Make a study group
-        study_group = StudyGroup(name="banana", maxSize=4, )
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom= zoom)
         study_group.save()
 
         # Add Student to group
@@ -962,10 +973,13 @@ class LeaveGroupTest(TestCase):
 
     def test_leave_group_student_yes_delete(self):
         # Make a study group
-        study_group = StudyGroup(name="banana", maxSize=4, )
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom= zoom)
         study_group.save()
 
         # Add Student to group
+        self.student.group_id = "64042306"
         study_group.members.add(self.student)
         study_group.save()
 
@@ -985,7 +999,9 @@ class LeaveGroupTest(TestCase):
 
     def test_leave_group_student_not_in_group(self):
         # Make a study group
-        study_group = StudyGroup(name="banana", maxSize=4, )
+        zoom = ZoomInfo(group_id = "64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=4, zoom = zoom)
         study_group.save()
 
         # Add Student to group
@@ -1008,7 +1024,9 @@ class LeaveGroupTest(TestCase):
 
     def test_leave_group_does_not_exist(self):
         # Make a study group
-        study_group = StudyGroup(name="banana", maxSize=2, )
+        zoom = ZoomInfo(group_id="64042306")
+        zoom.save()
+        study_group = StudyGroup(name="banana", maxSize=2, zoom=zoom)
         study_group.save()
 
         # Add Students to group

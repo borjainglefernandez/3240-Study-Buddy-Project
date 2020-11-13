@@ -55,7 +55,7 @@ class StudyGroup(models.Model):
     def delete(self, *args, **kwargs):
         # Note this is a simple example. it only handles delete(),
         # and not replacing images in .save()
-
+        print("deleting")
         group_id = None
         if (self.zoom != None):
             if (self.zoom.group_id != None):
@@ -73,4 +73,5 @@ class StudyGroup(models.Model):
                 except:
                     print("Failed to find group")
                     return
+                print("destroying group")
                 group.destroy()

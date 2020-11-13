@@ -43,7 +43,7 @@ class Student(models.Model):
 
     name = models.CharField(max_length=100) # Field for user's name
 
-    phone = models.PositiveIntegerField(default=0)
+    phone = models.PositiveBigIntegerField(default=0)
 
     year = models.PositiveSmallIntegerField(default = 1) # Field for user's year
 

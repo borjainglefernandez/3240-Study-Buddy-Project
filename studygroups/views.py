@@ -5,9 +5,36 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from studentprofile.models import Schedule, Course, Class, Student
-from .models import StudyGroup, ZoomInfo
+from .models import StudyGroup, ZoomInfo, GROUPME_TOKEN
 from django.contrib import messages
 from django.contrib.auth.models import User
+from groupy.client import Client
+from groupy.api.memberships import Memberships
+
+def groupMeGenerateGroup(studyGroup: StudyGroup):
+    # Generate client that does the work
+    client = Client.from_token(GROUPME_TOKEN)
+    # Create the group itself
+    new_group = client.groups.create(name=studyGroup.name)
+    #print(new_group)
+    #print(type(new_group))
+    studyGroup.zoom.group_id = new_group.group_id
+    studyGroup.save()
+
+def groupMeJoinGroup(studyGroup: StudyGroup, student: Student):
+    # Generate client that does the work
+    client = Client.from_token(GROUPME_TOKEN)
+
+
+    # Extra work to make joining a group possible via phone number
+    group = client.groups.get(studyGroup.zoom.group_id)
+    membership = group.get_membership()
+    memberships = Memberships(membership.manager.session, group_id=studyGroup.zoom.group_id)
+    memberships.add_multiple({
+        'nickname': student.name,
+        'phone_number': student.phone
+    })
+
 
 # Create your views here.
 def makeGroup(request):
@@ -106,6 +133,7 @@ def makeGroup(request):
     studyGroup.save()
     studyGroup.members.add(student)
     studyGroup.save()
+    groupMeGenerateGroup(studyGroup)
     
     # After a group is created, redirect the users to the group page
     context = {
@@ -128,6 +156,13 @@ def joinGroup(request):
     studyGroup.members.add(student)
     studyGroup.save()
 
+
+    if studyGroup.zoom.group_id != None: # Assumed situation
+        groupMeJoinGroup(studyGroup, student)
+    else: # Panic situation
+        groupMeGenerateGroup(studyGroup)
+        for s in studyGroup.members.all():
+            groupMeJoinGroup(studyGroup, s)
 
     return HttpResponseRedirect(reverse('home'))
 

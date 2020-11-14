@@ -8,12 +8,13 @@
     {% if user.student in StudyGroup.get_members %}
         <p><strong>Members: </strong>{{StudyGroup.get_members_email}}</p>
         <p>You can contact your group members by email to schedule a time to meet!</p>
+        <p><strong>GroupMe ID: </strong>{{StudyGroup.group_id}}</p>
     {% else %}
         <p><strong>Members: </strong>{{StudyGroup.get_members_string}}</p>
     {% endif %}
 
     <p><strong>Course: </strong>{{StudyGroup.course}}</p>
-    <p><strong>Zoom link: </strong>{{StudyGroup.zoom}}</p>
+    
 {% else %}
     <h4>Please login before viewing a study group!</h4>
 {% endif %}

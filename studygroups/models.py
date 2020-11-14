@@ -1,28 +1,23 @@
 from django.db import models
-
 from studentprofile.models import Student
 from login.models import Course
-
 GROUPME_TOKEN = "0vlhRZGIYVOYuz7DJfBwTRdStaxXBIoEc7usZSJW"
 from groupy.client import Client
-# Create your models here.
-class ZoomInfo(models.Model):
-    code = models.CharField(max_length=15, null=True)
-    url = models.CharField(max_length=100, null=True)
-    group_id = models.CharField(max_length=15, null=True)
-    def __str__(self):
-        return str(self.code) + " " + str(self.url) + " " + "Group Me ID: " + str(self.group_id)
 
+# Create your models here.
 class StudyGroup(models.Model):
     name = models.CharField(max_length=100)
     maxSize = models.PositiveSmallIntegerField(default = 2)
     members = models.ManyToManyField(Student)
-    zoom = models.OneToOneField(ZoomInfo, on_delete = models.DO_NOTHING, null = True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null = True)
+    group_id = models.CharField(max_length=15, null=True) # GroupMe ID
 
     def get_members(self):
         members = list(self.members.all())
         return members
+    
+    def get_group_id(self):
+        return self.group_id
 
     #A method that prints only the name of the member in a group
     def get_members_string(self):
@@ -57,9 +52,8 @@ class StudyGroup(models.Model):
         # and not replacing images in .save()
         print("deleting")
         group_id = None
-        if (self.zoom != None):
-            if (self.zoom.group_id != None):
-                group_id = self.zoom.group_id
+        if (self.group_id != None):
+            group_id = self.group_id
 
         super(StudyGroup, self).delete(*args, **kwargs)
 

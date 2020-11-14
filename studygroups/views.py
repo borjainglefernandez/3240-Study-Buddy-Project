@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from studentprofile.models import Schedule, Course, Class, Student
-from .models import StudyGroup, ZoomInfo, GROUPME_TOKEN
+from .models import StudyGroup, GROUPME_TOKEN
 from django.contrib import messages
 from django.contrib.auth.models import User
 from groupy.client import Client
@@ -18,8 +18,7 @@ def groupMeGenerateGroup(studyGroup):
     # Create the group itself
     new_group = client.groups.create(name=studyGroup.name)
 
-    studyGroup.zoom.group_id = new_group.group_id
-    studyGroup.zoom.save()
+    studyGroup.group_id = new_group.group_id
     studyGroup.save()
 
 def groupMeJoinGroup(studyGroup, student: Student):
@@ -28,7 +27,7 @@ def groupMeJoinGroup(studyGroup, student: Student):
 
     # Get group object
     try:
-        group = client.groups.get(studyGroup.zoom.group_id)
+        group = client.groups.get(studyGroup.group_id)
     except:
         print("Failed to find group")
         return
@@ -50,7 +49,6 @@ def groupMeJoinGroup(studyGroup, student: Student):
     for m in group.members:
         if str(m.nickname) == str(student.name):
             mem = m
-    studyGroup.zoom.save()
     studyGroup.save()
     try:
         student.groupme_id = str(mem.user_id)
@@ -65,7 +63,7 @@ def groupMeLeaveGroup(studyGroup: StudyGroup, student: Student):
 
     # Get group object
     try:
-        group = client.groups.get(studyGroup.zoom.group_id)
+        group = client.groups.get(studyGroup.group_id)
     except:
         print("Failed to find group")
         return
@@ -173,9 +171,7 @@ def makeGroup(request):
     else:
         return class_input_error
 
-    zoomRoom = ZoomInfo(url="https://virginia.zoom.us/j/6054369524", code="6054369524")
-    zoomRoom.save()
-    studyGroup = StudyGroup(name=request.POST["Name"], maxSize=request.POST["Size"], course= course, zoom=zoomRoom)
+    studyGroup = StudyGroup(name=request.POST["Name"], maxSize=request.POST["Size"], course= course)
     studyGroup.save()
     studyGroup.members.add(student)
     studyGroup.save()
@@ -208,7 +204,7 @@ def joinGroup(request):
     studyGroup.save()
 
 
-    if studyGroup.zoom.group_id != "None": # Assumed situation
+    if studyGroup.group_id != "None": # Assumed situation
         groupMeJoinGroup(studyGroup, student)
     else: # Panic situation
         groupMeGenerateGroup(studyGroup)
@@ -232,7 +228,7 @@ def leaveGroup(request):
     studyGroup.members.remove(student)
     studyGroup.save()
 
-    if studyGroup.zoom.group_id != "None": # Assumed situation
+    if studyGroup.group_id != "None": # Assumed situation
         groupMeLeaveGroup(studyGroup, student)
     else: # Panic situation
         groupMeGenerateGroup(studyGroup)
@@ -242,7 +238,6 @@ def leaveGroup(request):
     if str(studyGroup.get_members_string()) == "":
         studyGroup = StudyGroup.objects.get(pk=int(request.POST['Group']))
         studyGroup.delete()
-        studyGroup.zoom.delete()
 
     return HttpResponseRedirect(reverse('home'))
 

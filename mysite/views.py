@@ -135,6 +135,16 @@ def submit_profile(request):
             if request.POST["Name"].strip() == "":
                 return null_name_error_create # if user is creating their profile for first time and there is no name
                                               # raise the error
+            number = request.POST["phone"]
+            hyphen = '-' in number
+            openP = '(' in number
+            closeP = ')' in number
+            defaultNum = number == 5551234567 or number == 0
+            numLength = len(str(number)) != 10
+
+            if hyphen or openP or closeP or defaultNum or numLength:
+                return phone_error_edit
+
             # Create a Student Object that connects to that user
             student = Student(user = user, name = request.POST['Name'], year = request.POST['Year'],
                         major = request.POST['Major'], num = request.POST['NumClass'], phone = request.POST['phone'])

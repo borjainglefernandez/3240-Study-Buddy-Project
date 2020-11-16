@@ -90,7 +90,7 @@ def make(request):
     
     # Error for null schedule in Student Object
     null_schedule_error = render(request, 'studentprofile/schedule.html', {
-        'error_message': "Entering one or more classes to complete your schedule.",
+        'error_message': "Enter in one or more classes to complete your schedule.",
         'numC': numC
     })
     

@@ -5,10 +5,7 @@ from login.models import Course
 
 # Create your models here.
 class Schedule(models.Model):
-    # name = models.CharField(max_length=128)
     courses = models.ManyToManyField(Course, through='Class')
-    #num = models.PositiveSmallIntegerField()
-    
 
     # Create a list of all classes in a schedule so that
     # the template can run a for loop through

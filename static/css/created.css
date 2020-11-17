@@ -1,12 +1,15 @@
 :root {
-    --primary: #3b55ce;
-    --secondary: #d2a30b;
-    --tertiary: #387979;
-    --text: #037a90;
+    --primary: #AAA;
+    --secondary: rgb(156, 196, 243);
+    --text: #DDD;
+}
+
+body {
+    background-color: #111;
 }
 
 .off-white {
-    background-color: #eee;
+    background-color: #444;
 }
 
 h1 {

@@ -1,5 +1,5 @@
 # Virtual Study Buddy Finder
-## Created by Borja Ingle-Fernandez, Jason Watkins, Lisa Meng, and Mara Hart
+Created by Borja Ingle-Fernandez, Jason Watkins, Lisa Meng, and Mara Hart
 
 ### General instructions for use
 1. Click "Log In" on the top right to sign up or log in with a Google Account

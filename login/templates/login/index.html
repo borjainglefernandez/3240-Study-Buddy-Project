@@ -7,7 +7,7 @@
 If the user is authenticated then we do not have to log them in
 -->
 {% if user.student %}
-<div class="alert alert-primary">
+<div class="alert bg-dark">
 Don't see a group that fits you? <a href="groups/create" class="alert-link">Create</a> a group instead!
 </div>
 <div class="container">
@@ -28,7 +28,7 @@ Don't see a group that fits you? <a href="groups/create" class="alert-link">Crea
             <div class="row mb-3 off-white px-3 pb-2 pt-3 rounded">
                 <div class="col-md-9 col-sm-12">
                     <div class="row">
-                        <strong>{{ group }}</strong>
+                        <h5><strong>{{ group.name }}</strong></h5>
                     </div>
                     <div class="row">
                         <strong class="mr-1">Capacity: </strong> {{group.maxSize}}
@@ -77,7 +77,7 @@ Don't see a group that fits you? <a href="groups/create" class="alert-link">Crea
             {% endif %}
             {% endfor %}
         </div>
-        <div class="col-md">
+        <div class="col-md-9 col-sm-12 mt-5">
             {% if user.student.get_available_groups %}
             <h4 class="my-3">Available Study Groups: </h4>
             {% endif %}
@@ -92,7 +92,7 @@ Don't see a group that fits you? <a href="groups/create" class="alert-link">Crea
             <div class="row mb-3 off-white px-3 pb-2 pt-3 rounded">
                 <div class="col-md-9 col-sm-12">
                     <div class="row">
-                        <strong>{{ group }}</strong>
+                        <h5><strong>{{ group.name }}</strong></h5>
                     </div>
                     <div class="row">
                         <strong class="mr-1">Capacity: </strong> {{group.maxSize}}

@@ -3,18 +3,21 @@
 {% block content %}
 {% if user.is_authenticated %}
     <h1>{{StudyGroup.name}}</h1>
+    <div class="form-group w-100 mb-3 off-white px-3 pb-2 pt-3 rounded">
     <p><strong>Size: </strong>{{StudyGroup.maxSize}}</p>
     
     {% if user.student in StudyGroup.get_members %}
         <p><strong>Members: </strong>{{StudyGroup.get_members_email}}</p>
+        <div class="p-3 mb-2 bg-dark text-white">
         <p>You can contact your group members by email to schedule a time to meet!</p>
         <p><strong>GroupMe ID: </strong>{{StudyGroup.group_id}}</p>
+        </div>
     {% else %}
         <p><strong>Members: </strong>{{StudyGroup.get_members_string}}</p>
     {% endif %}
 
     <p><strong>Course: </strong>{{StudyGroup.course}}</p>
-    
+    </div>
 {% else %}
     <h4>Please login before viewing a study group!</h4>
 {% endif %}

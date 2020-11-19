@@ -15,6 +15,10 @@ class StudyGroup(models.Model):
     def get_members(self):
         members = list(self.members.all())
         return members
+
+    def spots_remaining(self):
+        members = list(self.members.all())
+        return self.maxSize - len(members)
     
     def get_group_id(self):
         return self.group_id

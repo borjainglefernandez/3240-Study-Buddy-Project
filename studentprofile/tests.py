@@ -442,6 +442,29 @@ class SubmitProfileTest(TestCase):
         }).content)
 
         self.assertEqual(actual, expected)
+    
+    # Test error message when phone number entered with hyphens
+    def test_submit_phone_error(self):
+        request = self.request_factory.post(reverse('submit'),
+                                            {'Name': ['Jim'],
+                                             'Year': ['2021'],
+                                             'Major': ['Systems Engineering'],
+                                             'NumClass': ['2'],
+                                             'phone': ['645-182-7384'],
+                                             'save-profile': ['']})
+        request.user = self.user
+        # Create a Student Object so that it is an existing user
+        student = Student(user=self.user, name="Borja", year=1, major="Computer Science", num=5, phone=8172229876)
+        student.save()
+
+        actual = len(submit_profile(request).content)
+
+        expected = len(render(request, 'studentprofile.html', {
+        'error_message': "Phone numbers must be 10-digits with no special characters",
+        'get_majors': majors,
+        }).content)
+
+        self.assertEqual(actual, expected)
 
 
 class MakeTest(TestCase):

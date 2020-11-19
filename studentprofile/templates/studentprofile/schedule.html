@@ -9,14 +9,17 @@
     <p>When marking strength, a <strong>1</strong> corresponds with <strong>needing help</strong>, i.e. you feel clueless and a <strong>5</strong> corresponds with <strong>being able to help others</strong>, i.e. you could become a TA next semester.</p>
     <!-- Check first to see if there is an error message that needs to be displayed, and display it  -->
     <p>{% if error_message %}
-    <p><strong>{{ error_message }}</strong></p>{% endif %}</p>
+        <div class="alert alert-danger" role="alert">
+        <p><strong>{{ error_message }}</strong></p>
+        </div>
+    {% endif %}</p>
 
     <form action="{% url 'studentprofile:generateSchedule' %}" method="post">
 
         {% csrf_token %}
         <!-- Create as many text boxes as the user indicated classes they want -->
         {% for numbers in numC %}
-        <div class="row mb-3 off-white px-3 pb-2 pt-3 rounded">
+        <div class="row mb-3 off-white px-3 pb-3 pt-3 rounded">
             <div class="container">
                 <div class="row mb-3">
                     <label for="choice{{ forloop.counter }}" class="mr-1">Class Name: </label>

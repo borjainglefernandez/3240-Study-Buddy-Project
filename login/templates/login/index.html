@@ -7,8 +7,9 @@
 If the user is authenticated then we do not have to log them in
 -->
 {% if user.student %}
-Don't see a group that fits you? <a href="groups/create">Create</a> a group instead!
-
+<div class="alert alert-primary">
+Don't see a group that fits you? <a href="groups/create" class="alert-link">Create</a> a group instead!
+</div>
 <div class="container">
     <div class="row">
         <div class="col-md-9 col-sm-12">

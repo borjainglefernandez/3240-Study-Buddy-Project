@@ -10,19 +10,21 @@ the necessary fields for them to do so
 
 {% if not user.student.name or user.student.edit%}
     {% if error_message %}
+        <div class="alert alert-danger" role="alert">
          <p><strong>{{ error_message }}</strong></p>
+        </div>
     {% endif %}
 <form action="{% url 'submit' %}" method="post">
     {% csrf_token %}
     <!--
      Label for the student's name
     -->
-    <div class="form-group w-100 mb-3 off-white px-3 pb-2 pt-3 rounded">
+    <div class="form-group w-100 mb-3 off-white px-3 pb-3 pt-3 rounded">
         <label for="Name"> Name</label>
         <input type="text" class="form-control" name="Name" id="Name" placeholder="Enter your first name" value="{{user.student.name}}">
     </div>
 
-    <div class="form-group w-100 mb-3 off-white px-3 pb-2 pt-3 rounded">
+    <div class="form-group w-100 mb-3 off-white px-3 pb-3 pt-3 rounded">
         <label for="phone"> Phone Number</label>
         <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter your phone number" value="{{user.student.phone}}">
     </div>
@@ -61,7 +63,7 @@ the necessary fields for them to do so
     <!--
    Label for the number of student's classes on schedule
   -->
-    <div class="form-group w-100 mb-3 off-white px-3 pb-2 pt-3 rounded" style="background-color: #eee;">
+    <div class="form-group w-100 mb-3 off-white px-3 pb-2 pt-3 rounded" >
         <label for="NumClass">Number of classes you would like to add for your schedule </label>
         <select id="NumClass" name="NumClass">
             {% with '1 2 3 4 5' as numClasses%}
@@ -78,7 +80,7 @@ the necessary fields for them to do so
     {% if not user.student.name %}
         <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Now go generate your schedule!</button>
     {% else %}
-        <button type="submit" class="btn btn-primary mx-5" name="save-profile">Save</button>
+        <button type="submit" class="btn btn-primary mx-6" name="save-profile">Save</button>
         <button type="submit" class="btn btn-primary mx-5" name="generate-schedule">Edit schedule</button>
     {% endif %}
 </form>
@@ -129,22 +131,22 @@ If the user already has already completed profile, display their profile
     </div>
 
     <!-- Divider for Schedule-->
-    <div class="row mb-2 mt-5">
-        <strong>Schedule</strong>
+    <div class="row mb-2 mt-5 col-md-3">
+        <h5>Schedule</h5>
     </div>
-    <div class="off-white px-3 pb-2 pt-3 rounded">
+    <div class="off-white px-3 pb-3 pt-3 rounded">
         <div class="row">
-            <div class="col-md-9"><strong>Course Title</strong></div>
-            <div class="col-md-3 text-right"><strong>Strength</strong></div>
+            <div class="col-md-9 mb-2"><strong>Course Title</strong></div>
+            <div class="col-md-3 text-center"><strong>Strength</strong></div>
         </div>
         <div class="row">
             <!-- For every class, display class and strength-->
             {% for class in user.student.schedule.get_classes %}
-                <div class="col-md-9">
+                <div class="col-md-9 pb-2">
                     {{ class }}
                 </div>
                 <div class="col-md-3">
-                    <p class="text-right">{{ class.strength }}</p>
+                    <p class="text-center">{{ class.strength }}</p>
                 </div>
             {% endfor %}
         </div>

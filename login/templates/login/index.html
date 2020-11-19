@@ -31,6 +31,9 @@ Don't see a group that fits you? <a href="groups/create" class="alert-link">Crea
                         <h5><strong>{{ group.name }}</strong></h5>
                     </div>
                     <div class="row">
+                        <strong class="mr-1">Spots Remaining: </strong> {{group.spots_remaining}}
+                    </div>
+                    <div class="row">
                         <strong class="mr-1">Capacity: </strong> {{group.maxSize}}
                     </div>
 
@@ -94,6 +97,11 @@ Don't see a group that fits you? <a href="groups/create" class="alert-link">Crea
                     <div class="row">
                         <h5><strong>{{ group.name }}</strong></h5>
                     </div>
+
+                    <div class="row">
+                        <strong class="mr-1">Spots Remaining: </strong> {{group.spots_remaining}}
+                    </div>
+
                     <div class="row">
                         <strong class="mr-1">Capacity: </strong> {{group.maxSize}}
                     </div>

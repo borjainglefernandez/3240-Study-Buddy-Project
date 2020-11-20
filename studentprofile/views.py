@@ -130,7 +130,7 @@ def make(request):
 
         parts = request.POST[classKeys[i]].strip().split(" ")
         if len(parts) == 2:
-            mn = parts[0]
+            mn = parts[0].upper()
             num = parts[1]
 
             # If the number inputted for the class is not 4 digits, raise an error

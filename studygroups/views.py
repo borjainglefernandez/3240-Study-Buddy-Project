@@ -149,6 +149,11 @@ def makeGroup(request):
     except:
         print("All good!")
 
+    # allowedCharacters = "ABCDEFGHabcdef1234567890!@#$^&*() _-=+"
+    # for c in request.POST["Name"]:
+    #     if c not in allowedCharacters:
+    #         return ERROR
+
     courseParts = request.POST["Class"].strip().split(" ")
 
     if len(courseParts) == 2:

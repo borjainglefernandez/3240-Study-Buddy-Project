@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Student, Schedule, Course, Class
 from studygroups.models import StudyGroup
-from studygroups.views import joinGroup, leaveGroup
+from studygroups.views import joinGroup, leaveGroup, makeGroup
 import courseInitializer
 from .views import make
 from mysite.views import submit_profile
@@ -806,6 +806,44 @@ class StudyGroupModelFunctionTest(TestCase):
 
         actual = study_group.get_members_string()
         expected = 'Jim, Jim2'
+
+        self.assertEqual(expected, actual)
+    
+    # Test error message if a group with existed name is entered
+    def test_duplicated_group_name(self):
+        study_group = StudyGroup(name = "banana",maxSize = 4,)
+        study_group.save()
+
+        # Add Students to group
+        study_group.members.add(self.student1)
+        study_group.save()
+        
+        request = self.request_factory.post(reverse('studentprofile:generateSchedule'),
+        {'Name': ['banana'], 'Size': ['3'],
+         'Class': ['CS 3240'],}) #no class entered
+
+        request.user = self.user
+        actual = len(makeGroup(request).content)
+        
+        expected = len(render(request, 'studygroups/groupCreate.html', {
+        'error_message': "Group name is taken, please try another name", 
+        }).content)
+
+        self.assertEqual(expected, actual)
+        
+    # Tests error message of group name containing '/'
+    def test_errored_group_name(self):
+        
+        request = self.request_factory.post(reverse('studentprofile:generateSchedule'),
+        {'Name': ['ILoveCS3240/'], 'Size': ['3'],
+         'Class': ['CS 3240'],}) #no class entered
+
+        request.user = self.user
+        actual = len(makeGroup(request).content)
+        
+        expected = len(render(request,'studygroups/groupCreate.html', {
+        'error_message': "Group name can not contain characters like '/'.",
+        }).content)
 
         self.assertEqual(expected, actual)
 

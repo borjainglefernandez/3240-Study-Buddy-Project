@@ -79,7 +79,7 @@ majors = ["Undeclared",
                 "Speech Communication Disorders",
                 "Statistics",
                 "Studio Art",
-                "Systems Engineering"
+                "Systems Engineering",
                 "Urban and Environmental Planning",
                 "Women, Gender & Sexuality",
                 "Youth & Social Innovation(BSEd)"

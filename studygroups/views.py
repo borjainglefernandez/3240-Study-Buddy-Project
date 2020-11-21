@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from groupy.client import Client
 from groupy.api.memberships import Memberships
+import time
 
 #def groupMeGenerateGroup(studyGroup: StudyGroup):
 def groupMeGenerateGroup(studyGroup):
@@ -44,16 +45,23 @@ def groupMeJoinGroup(studyGroup, student: Student):
         'phone_number': str(student.phone)
     }
     memberships.add_multiple(member)
+    time.sleep(0.1)
     # Save their user id for later
     mem = None
+    print(group.members)
     for m in group.members:
+        print(str(m.nickname), str(student.name))
         if str(m.nickname) == str(student.name):
             mem = m
     studyGroup.save()
     try:
-        student.groupme_id = str(mem.user_id)
-        student.save()
+        print(type(mem))
+        print(mem)
+        if mem != None and mem != "None":
+            student.groupme_id = str(mem.user_id)
+            student.save()
     except:
+        print("Failed to save")
         pass
 
 
@@ -71,8 +79,7 @@ def groupMeLeaveGroup(studyGroup: StudyGroup, student: Student):
     # Assumes their user_id is known
     mem = None
     for m in group.members:
-        print(m.user_id, student.user_id)
-        if str(m.user_id) == str(student.user_id):
+        if str(m.user_id) == str(student.groupme_id):
             mem = m
     try:
         mem.remove()
@@ -142,6 +149,11 @@ def makeGroup(request):
             return repeated_name_error
     except:
         print("All good!")
+
+    # allowedCharacters = "ABCDEFGHabcdef1234567890!@#$^&*() _-=+"
+    # for c in request.POST["Name"]:
+    #     if c not in allowedCharacters:
+    #         return ERROR
 
     courseParts = request.POST["Class"].strip().split(" ")
 

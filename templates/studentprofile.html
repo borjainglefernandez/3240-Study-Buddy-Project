@@ -66,7 +66,7 @@ the necessary fields for them to do so
     <div class="form-group w-100 mb-3 off-white px-3 pb-2 pt-3 rounded" >
         <label for="NumClass">Number of classes you would like to add for your schedule </label>
         <select id="NumClass" name="NumClass">
-            {% with '1 2 3 4 5' as numClasses%}
+            {% with '1 2 3 4 5 6 7' as numClasses%}
                 {% for number in numClasses.split %}
                     {% if user.student.num|slugify == number %}
                         <option value={{number}} selected>{{number}}</option>

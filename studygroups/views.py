@@ -83,6 +83,7 @@ def groupMeLeaveGroup(studyGroup: StudyGroup, student: Student):
             mem = m
     try:
         mem.remove()
+        mem.save()
     except:
         pass
 
@@ -138,13 +139,13 @@ def makeGroup(request):
         return HttpResponseRedirect(reverse('home'))
 
     try:
-        if '/' in request.POST["Name"]:
+        if '/' in request.POST["Name"].strip():
             return name_slash_error 
     except:
         print("All good!")
         
     try:
-        if StudyGroup.objects.get(name=request.POST["Name"]):
+        if StudyGroup.objects.get(name=request.POST["Name"].strip()):
             return repeated_name_error
     except:
         print("All good!")
@@ -184,7 +185,7 @@ def makeGroup(request):
     else:
         return class_input_error
 
-    studyGroup = StudyGroup(name=request.POST["Name"], maxSize=request.POST["Size"], course= course)
+    studyGroup = StudyGroup(name=request.POST["Name"].strip(), maxSize=request.POST["Size"], course= course)
     studyGroup.save()
     studyGroup.members.add(student)
     studyGroup.save()

@@ -46,6 +46,11 @@ def groupMeJoinGroup(studyGroup, student: Student):
     }
     memberships.add_multiple(member)
     time.sleep(0.1)
+    try:
+        group = client.groups.get(studyGroup.group_id)
+    except:
+        print("Failed to find group")
+        return
     # Save their user id for later
     mem = None
     print(group.members)

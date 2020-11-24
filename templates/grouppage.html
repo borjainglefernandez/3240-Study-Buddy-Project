@@ -9,8 +9,8 @@
     {% if user.student in StudyGroup.get_members %}
         <p><strong>Members: </strong>{{StudyGroup.get_members_email}}</p>
         <div class="p-3 mb-2 bg-dark text-white">
-        <p>You can contact your group members by email to schedule a time to meet!</p>
-        <p><strong>GroupMe ID: </strong>{{StudyGroup.group_id}}</p>
+        <p>You can contact your group members by GroupMe or email to schedule a time to meet!</p>
+{#        <p><strong>GroupMe ID: </strong>{{StudyGroup.group_id}}</p>#}
         </div>
     {% else %}
         <p><strong>Members: </strong>{{StudyGroup.get_members_string}}</p>

@@ -44,9 +44,9 @@ def groupMeJoinGroup(studyGroup, student: Student):
         'nickname': str(student.name),
         'phone_number': str(student.phone)
     }
-    result = memberships.add_multiple(member)
-    result.poll(timeout=5, interval=0.1)
-    #time.sleep(1)
+    memberships.add_multiple(member)
+    #result.poll(timeout=5, interval=0.1)
+    time.sleep(1)
     try:
         group = client.groups.get(studyGroup.group_id)
     except:

@@ -64,7 +64,7 @@ def groupMeJoinGroup(studyGroup, student: Student):
         print(mem)
         print(mem.user_id)
         print(str(mem.user_id))
-        if mem != None and mem != "None":
+        if str(mem.user_id) != "None":
             print("Entered if statement")
             student.groupme_id = str(mem.user_id)
             student.save()

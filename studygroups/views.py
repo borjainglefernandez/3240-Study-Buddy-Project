@@ -45,7 +45,7 @@ def groupMeJoinGroup(studyGroup, student: Student):
         'phone_number': str(student.phone)
     }
     memberships.add_multiple(member)
-    time.sleep(0.1)
+    time.sleep(1)
     try:
         group = client.groups.get(studyGroup.group_id)
     except:

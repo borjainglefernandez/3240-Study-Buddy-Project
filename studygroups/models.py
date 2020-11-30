@@ -1,7 +1,7 @@
 from django.db import models
 from studentprofile.models import Student
 from login.models import Course
-GROUPME_TOKEN = "0vlhRZGIYVOYuz7DJfBwTRdStaxXBIoEc7usZSJW"
+GROUPME_TOKEN = "M7mq8SdmVWQ2IcHCE8pBpptQtK2rRQPJJWprhi8Q"
 from groupy.client import Client
 
 # Create your models here.

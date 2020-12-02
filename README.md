@@ -1,6 +1,8 @@
 # Virtual Study Buddy Finder
 Created by Borja Ingle-Fernandez, Jason Watkins, Lisa Meng, and Mara Hart
 
+https://asd-1-05-project.herokuapp.com/
+
 ### General instructions for use
 1. Click "Log In" on the top right to sign up or log in with a Google Account
 2. Set up your profile with your name, number (associated with GroupMe), major, and year
